@@ -1,4 +1,5 @@
 defmodule StacksWeb.Router do
+  alias ItemController
   use StacksWeb, :router
 
   pipeline :browser do
@@ -16,8 +17,12 @@ defmodule StacksWeb.Router do
 
   scope "/", StacksWeb do
     pipe_through :browser
-
     get "/", PageController, :home
+  end
+
+  scope "/api", StacksWeb do
+    pipe_through :api
+    resources "/items", ItemController, except: [:new, :edit]
   end
 
   # Other scopes may use custom stacks.
