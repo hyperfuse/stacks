@@ -67,6 +67,12 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Configure Oban default queue
+config :stacks, Oban,
+  repo: Stacks.Repo,
+  queues: [default: 10],
+  plugins: [Oban.Plugins.Pruner]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

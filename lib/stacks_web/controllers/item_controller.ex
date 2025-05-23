@@ -14,9 +14,8 @@ defmodule StacksWeb.ItemController do
   def create(conn, %{"item" => item_params}) do
     IO.inspect(item_params)
 
-    with {:ok, %Item{} = item} <- Items.create_item(item_params) do
-      IO.inspect(item)
-
+    with {:ok, %Item{} = item} <- Items.create_item(item_params),
+         {:ok, _job} <- StacksJobs.Workers.WebpageEnricher.insert(%{"id" => item.id}) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/items/#{item}")
