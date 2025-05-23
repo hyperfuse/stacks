@@ -1,6 +1,5 @@
 defmodule StacksWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :stacks
-
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -48,6 +47,8 @@ defmodule StacksWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+  # Allow cross-origin requests in dev
+  plug Corsica, origins: "*", allow_headers: :all
   plug Plug.Session, @session_options
   plug StacksWeb.Router
 end
