@@ -20,7 +20,6 @@ defmodule StacksWeb.ItemJSON do
       id: item.id,
       item_type: item.item_type,
       source_url: item.source_url,
-      title: item.title,
       text_content: item.text_content,
       metadata: item.metadata
     }

@@ -12,7 +12,10 @@ defmodule StacksWeb.Router do
   end
 
   pipeline :api do
+    plug Corsica, origins: "*"
     plug :accepts, ["json"]
+    # Allow cross-origin requests in dev
+    plug Corsica, origins: "*", allow_headers: :all
   end
 
   scope "/", StacksWeb do
@@ -22,13 +25,8 @@ defmodule StacksWeb.Router do
 
   scope "/api", StacksWeb do
     pipe_through :api
-    resources "/items", ItemController, except: [:new, :edit]
+    resources "/items", ItemController, except: [:edit]
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", StacksWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:stacks, :dev_routes) do

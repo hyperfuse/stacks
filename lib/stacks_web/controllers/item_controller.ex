@@ -12,7 +12,11 @@ defmodule StacksWeb.ItemController do
   end
 
   def create(conn, %{"item" => item_params}) do
+    IO.inspect(item_params)
+
     with {:ok, %Item{} = item} <- Items.create_item(item_params) do
+      IO.inspect(item)
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/items/#{item}")

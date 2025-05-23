@@ -35,6 +35,8 @@ defmodule Stacks.MixProject do
       {:phoenix, "~> 1.7.20"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
+      {:cors_plug, "~> 3.0"},
+      {:corsica, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
