@@ -11,6 +11,7 @@ defmodule Stacks.Application do
       StacksWeb.Telemetry,
       Stacks.Repo,
       {DNSCluster, query: Application.get_env(:stacks, :dns_cluster_query) || :ignore},
+      {Oban, Application.fetch_env!(:stacks, Oban)},
       {Phoenix.PubSub, name: Stacks.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Stacks.Finch},
