@@ -5,12 +5,19 @@ defmodule StacksJobs.Workers.WebpageEnricher do
   def perform(%Oban.Job{args: %{"id" => id}}) do
     IO.puts("Processing job with ID #{id}")
 
-    # Check the error
+    # TODO Check the error
     item = Items.get_item!(id)
     summary = Readability.summarize(item.source_url)
-    IO.inspect(summary)
-    # Clean the url
-    :ok
+
+    # TODO check errors
+    Items.update_item(item, %{
+      "metadata" => %{
+        "article_text" => summary.article_text,
+        "article_html" => summary.article_html,
+        "title" => summary.title,
+        "authors" => summary.authors
+      }
+    })
   end
 
   def insert(%{"id" => id}) do
