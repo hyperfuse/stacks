@@ -62,7 +62,8 @@ defmodule Stacks.MixProject do
       {:oban, "~> 2.19"},
       {:igniter, "~> 0.5", only: [:dev]},
       {:readability, "~> 0.12"},
-      {:floki, ">= 0.30.0"}
+      {:floki, ">= 0.30.0"},
+      {:nanoid, "~> 2.1"}
     ]
   end
 
