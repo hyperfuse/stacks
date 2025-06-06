@@ -9,17 +9,15 @@ defmodule StacksWeb.ItemControllerTest do
     item_type: "some item_type",
     metadata: %{},
     source_url: "some source_url",
-    text_content: "some text_content",
-    title: "some title"
+    text_content: "some text_content"
   }
   @update_attrs %{
     item_type: "some updated item_type",
     metadata: %{},
     source_url: "some updated source_url",
-    text_content: "some updated text_content",
-    title: "some updated title"
+    text_content: "some updated text_content"
   }
-  @invalid_attrs %{item_type: nil, metadata: nil, source_url: nil, text_content: nil, title: nil}
+  @invalid_attrs %{item_type: nil, metadata: nil, source_url: nil, text_content: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -44,8 +42,7 @@ defmodule StacksWeb.ItemControllerTest do
                "item_type" => "some item_type",
                "metadata" => %{},
                "source_url" => "some source_url",
-               "text_content" => "some text_content",
-               "title" => "some title"
+               "text_content" => "some text_content"
              } = json_response(conn, 200)["data"]
     end
 
@@ -69,8 +66,7 @@ defmodule StacksWeb.ItemControllerTest do
                "item_type" => "some updated item_type",
                "metadata" => %{},
                "source_url" => "some updated source_url",
-               "text_content" => "some updated text_content",
-               "title" => "some updated title"
+               "text_content" => "some updated text_content"
              } = json_response(conn, 200)["data"]
     end
 

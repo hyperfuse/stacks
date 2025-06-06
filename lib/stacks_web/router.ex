@@ -25,6 +25,7 @@ defmodule StacksWeb.Router do
 
   scope "/api", StacksWeb do
     pipe_through :api
+    resources "/articles", ArticleController, except: [:edit]
     resources "/items", ItemController, except: [:edit]
   end
 

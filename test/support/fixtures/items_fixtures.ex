@@ -14,8 +14,7 @@ defmodule Stacks.ItemsFixtures do
         item_type: "some item_type",
         metadata: %{},
         source_url: "some source_url",
-        text_content: "some text_content",
-        title: "some title"
+        text_content: "some text_content"
       })
       |> Stacks.Items.create_item()
 
