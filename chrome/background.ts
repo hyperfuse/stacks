@@ -4,24 +4,34 @@ export {};
 
 chrome.action.onClicked.addListener((tab) => {
   const url = tab.url;
-  fetch("http://localhost:4000/api/items", {
+  fetch("http://localhost:4000/api/articles", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Origin: "http://localhost:4000",
     },
     body: JSON.stringify({
-      item: {
+      article: {
         source_url: url,
-        item_type: "webpage",
-        text_content: "",
       },
     }),
   });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  console.log(info, tab);
+  const url = info.linkUrl || tab.url;
+  fetch("http://localhost:4000/api/articles", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Origin: "http://localhost:4000",
+    },
+    body: JSON.stringify({
+      article: {
+        source_url: url,
+      },
+    }),
+  });
 });
 
 chrome.runtime.onInstalled.addListener(function () {

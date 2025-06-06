@@ -1,15 +1,18 @@
 defmodule StacksJobs.Workers.WebpageEnricher do
   use Oban.Worker, queue: :default, max_attempts: 3
   alias Stacks.Articles
+  alias Stacks.Items
+  alias Stacks.Repo
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"article_id" => article_id}}) do
     IO.puts("Processing article enrichment job for article ID #{article_id}")
 
-    # Get the article
-    article = Articles.get_article!(article_id)
+    # Get the article and its associated item
+    article = Articles.get_article!(article_id) |> Repo.preload(:item)
+    item = article.item
     
-    # Update status to processing
-    Articles.update_article(article, %{"status" => "processing"})
+    # Update item enrichment status to processing
+    Items.update_item(item, %{"enrichment_status" => "processing"})
 
     try do
       # Extract content using Readability
@@ -23,13 +26,15 @@ defmodule StacksJobs.Workers.WebpageEnricher do
           "article_html" => summary.article_html,
           "authors" => summary.authors,
           "extracted_at" => DateTime.utc_now()
-        },
-        "status" => "completed"
+        }
       })
+
+      # Update item enrichment status to completed
+      Items.update_item(item, %{"enrichment_status" => "completed"})
     rescue
       error ->
         IO.puts("Error enriching article #{article_id}: #{inspect(error)}")
-        Articles.update_article(article, %{"status" => "failed"})
+        Items.update_item(item, %{"enrichment_status" => "failed"})
         {:error, error}
     end
   end

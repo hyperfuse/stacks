@@ -11,7 +11,8 @@ defmodule Stacks.ArticlesFixtures do
     # Create an item first since article requires it
     item = Stacks.ItemsFixtures.item_fixture(%{
       item_type: "article",
-      source_url: "https://example.com/article"
+      source_url: "https://example.com/article",
+      enrichment_status: "pending"
     })
 
     {:ok, article} =
@@ -21,7 +22,6 @@ defmodule Stacks.ArticlesFixtures do
         source_url: "https://example.com/article",
         content: "some content",
         metadata: %{},
-        status: "pending",
         item_id: item.id
       })
       |> Stacks.Articles.create_article()

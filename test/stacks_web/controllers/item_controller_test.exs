@@ -9,15 +9,17 @@ defmodule StacksWeb.ItemControllerTest do
     item_type: "some item_type",
     metadata: %{},
     source_url: "some source_url",
-    text_content: "some text_content"
+    text_content: "some text_content",
+    enrichment_status: "pending"
   }
   @update_attrs %{
     item_type: "some updated item_type",
     metadata: %{},
     source_url: "some updated source_url",
-    text_content: "some updated text_content"
+    text_content: "some updated text_content",
+    enrichment_status: "completed"
   }
-  @invalid_attrs %{item_type: nil, metadata: nil, source_url: nil, text_content: nil}
+  @invalid_attrs %{item_type: nil, metadata: nil, source_url: nil, text_content: nil, enrichment_status: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}

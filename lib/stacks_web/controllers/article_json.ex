@@ -22,7 +22,6 @@ defmodule StacksWeb.ArticleJSON do
       source_url: article.source_url,
       content: article.content,
       metadata: article.metadata,
-      status: article.status,
       item_id: article.item_id,
       user_id: article.user_id
     }

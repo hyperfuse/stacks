@@ -7,7 +7,6 @@ defmodule Stacks.Articles.Article do
     field :source_url, :string
     field :content, :string
     field :metadata, :map
-    field :status, :string, default: "pending"
     belongs_to :item, Stacks.Items.Item
     belongs_to :user, Stacks.Accounts.User
     timestamps(type: :utc_datetime)
@@ -16,8 +15,7 @@ defmodule Stacks.Articles.Article do
   @doc false
   def changeset(article, attrs) do
     article
-    |> cast(attrs, [:title, :source_url, :content, :metadata, :status, :item_id, :user_id])
+    |> cast(attrs, [:title, :source_url, :content, :metadata, :item_id, :user_id])
     |> validate_required([:source_url, :item_id])
-    |> validate_inclusion(:status, ["pending", "processing", "completed", "failed"])
   end
 end

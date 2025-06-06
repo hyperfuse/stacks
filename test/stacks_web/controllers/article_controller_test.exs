@@ -9,17 +9,15 @@ defmodule StacksWeb.ArticleControllerTest do
     title: "some title",
     source_url: "https://example.com/test",
     content: "some content",
-    metadata: %{},
-    status: "pending"
+    metadata: %{}
   }
   @update_attrs %{
     title: "some updated title",
     source_url: "https://updated.com/test",
     content: "some updated content",
-    metadata: %{updated: true},
-    status: "completed"
+    metadata: %{updated: true}
   }
-  @invalid_attrs %{title: nil, source_url: nil, content: nil, metadata: nil, status: nil}
+  @invalid_attrs %{title: nil, source_url: nil, content: nil, metadata: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -44,7 +42,6 @@ defmodule StacksWeb.ArticleControllerTest do
                "content" => "some content",
                "metadata" => %{},
                "source_url" => "https://example.com/test",
-               "status" => "pending",
                "title" => "some title"
              } = json_response(conn, 200)["data"]
     end
@@ -69,7 +66,6 @@ defmodule StacksWeb.ArticleControllerTest do
                "content" => "some updated content",
                "metadata" => %{"updated" => true},
                "source_url" => "https://updated.com/test",
-               "status" => "completed",
                "title" => "some updated title"
              } = json_response(conn, 200)["data"]
     end
