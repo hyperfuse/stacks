@@ -38,6 +38,24 @@ defmodule Stacks.Items do
   def get_item!(id), do: Repo.get!(Item, id)
 
   @doc """
+  Gets a single item by source_url.
+
+  Returns `nil` if no item exists with the given source_url.
+
+  ## Examples
+
+      iex> get_item_by_source_url("https://example.com")
+      %Item{}
+
+      iex> get_item_by_source_url("https://nonexistent.com")
+      nil
+
+  """
+  def get_item_by_source_url(source_url) do
+    Repo.get_by(Item, source_url: source_url)
+  end
+
+  @doc """
   Creates a item.
 
   ## Examples
@@ -53,6 +71,34 @@ defmodule Stacks.Items do
     %Item{}
     |> Item.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Creates a item or returns the existing one if source_url already exists.
+
+  ## Examples
+
+      iex> create_or_get_item(%{source_url: "https://example.com", item_type: "article"})
+      {:ok, %Item{}}
+
+      iex> create_or_get_item(%{source_url: "https://example.com", item_type: "article"})
+      {:existing, %Item{}}
+
+  """
+  def create_or_get_item(attrs \\ %{}) do
+    case attrs["source_url"] || attrs[:source_url] do
+      nil ->
+        create_item(attrs)
+      
+      source_url ->
+        case get_item_by_source_url(source_url) do
+          nil ->
+            create_item(attrs)
+          
+          existing_item ->
+            {:existing, existing_item}
+        end
+    end
   end
 
   @doc """

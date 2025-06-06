@@ -52,6 +52,33 @@ defmodule StacksWeb.ItemControllerTest do
       conn = post(conn, ~p"/api/items", item: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
+
+    test "returns existing item when source_url already exists", %{conn: conn} do
+      # Create first item
+      conn1 = post(conn, ~p"/api/items", item: @create_attrs)
+      assert %{"id" => id1} = json_response(conn1, 201)["data"]
+
+      # Try to create another item with the same source_url
+      conn2 = post(conn, ~p"/api/items", item: @create_attrs)
+      assert %{"id" => id2} = json_response(conn2, 200)["data"]
+
+      # Should return the same item
+      assert id1 == id2
+    end
+
+    test "creates new item when source_url is different", %{conn: conn} do
+      # Create first item
+      conn1 = post(conn, ~p"/api/items", item: @create_attrs)
+      assert %{"id" => id1} = json_response(conn1, 201)["data"]
+
+      # Create item with different source_url
+      different_attrs = Map.put(@create_attrs, :source_url, "different_source_url")
+      conn2 = post(conn, ~p"/api/items", item: different_attrs)
+      assert %{"id" => id2} = json_response(conn2, 201)["data"]
+
+      # Should create a new item
+      assert id1 != id2
+    end
   end
 
   describe "update item" do

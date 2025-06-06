@@ -63,5 +63,39 @@ defmodule Stacks.ItemsTest do
       item = item_fixture()
       assert %Ecto.Changeset{} = Items.change_item(item)
     end
+
+    test "create_item/1 with duplicate source_url returns error changeset" do
+      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "duplicate_url", text_content: "some text_content", enrichment_status: :pending}
+
+      assert {:ok, %Item{}} = Items.create_item(valid_attrs)
+      assert {:error, %Ecto.Changeset{} = changeset} = Items.create_item(valid_attrs)
+      assert changeset.errors[:source_url] == {"has already been taken", [constraint: :unique, constraint_name: "items_source_url_index"]}
+    end
+
+    test "get_item_by_source_url/1 returns the item with given source_url" do
+      item = item_fixture()
+      assert Items.get_item_by_source_url(item.source_url) == item
+    end
+
+    test "get_item_by_source_url/1 returns nil when source_url does not exist" do
+      assert Items.get_item_by_source_url("non_existent_url") == nil
+    end
+
+    test "create_or_get_item/1 creates new item when source_url is unique" do
+      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "unique_url", text_content: "some text_content", enrichment_status: :pending}
+
+      assert {:ok, %Item{} = item} = Items.create_or_get_item(valid_attrs)
+      assert item.source_url == "unique_url"
+    end
+
+    test "create_or_get_item/1 returns existing item when source_url already exists" do
+      existing_item = item_fixture()
+      
+      duplicate_attrs = %{item_type: "different type", metadata: %{foo: "bar"}, source_url: existing_item.source_url, text_content: "different content", enrichment_status: :completed}
+
+      assert {:existing, %Item{} = returned_item} = Items.create_or_get_item(duplicate_attrs)
+      assert returned_item.id == existing_item.id
+      assert returned_item.source_url == existing_item.source_url
+    end
   end
 end
