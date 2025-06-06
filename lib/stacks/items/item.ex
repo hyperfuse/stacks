@@ -24,6 +24,7 @@ defmodule Stacks.Items.Item do
     |> cast(attrs, [:item_type, :source_url, :text_content, :metadata, :enrichment_status])
     |> validate_required([:item_type, :source_url])
     |> validate_inclusion(:enrichment_status, [:pending, :processing, :completed, :failed])
+    |> unique_constraint(:source_url)
     |> put_id()
   end
 
