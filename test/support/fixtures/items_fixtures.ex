@@ -15,7 +15,7 @@ defmodule Stacks.ItemsFixtures do
         metadata: %{},
         source_url: "some source_url",
         text_content: "some text_content",
-        title: "some title"
+        enrichment_status: :pending
       })
       |> Stacks.Items.create_item()
 
