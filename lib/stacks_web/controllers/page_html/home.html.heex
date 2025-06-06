@@ -1,6 +1,60 @@
 <.flash_group flash={@flash} />
-<div class="min-h-screen bg-gray-100 px-4 py-8 sm:px-6 lg:px-8">
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 auto-rows-max">
+<div class="min-h-screen bg-gray-100">
+  <!-- Header with Search and Navigation -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo/Brand -->
+        <div class="flex-shrink-0">
+          <h1 class="text-xl font-semibold text-gray-900">Stacks</h1>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-2xl mx-8">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search..."
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#" class="text-blue-600 border-b-2 border-blue-600 px-1 pb-1 text-sm font-medium">Everything</a>
+          <a href="#" class="text-gray-500 hover:text-gray-700 px-1 pb-1 text-sm font-medium border-b-2 border-transparent hover:border-gray-300">Stacks</a>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button type="button" class="text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 p-2 rounded-md" id="mobile-menu-button">
+            <span class="sr-only">Open main menu</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="md:hidden border-t border-gray-200" id="mobile-menu" style="display: none;">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a href="#" class="text-blue-600 bg-blue-50 block px-3 py-2 rounded-md text-base font-medium">Everything</a>
+          <a href="#" class="text-gray-500 hover:text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Stacks</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 auto-rows-max">
     
     <!-- Quote Card - Mark Twain -->
     <div class="bg-white rounded-lg p-6 shadow-sm">
@@ -146,5 +200,21 @@
       </div>
     </div>
 
+    </div>
   </div>
 </div>
+
+<script>
+  // Mobile menu toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        const isHidden = mobileMenu.style.display === 'none' || mobileMenu.style.display === '';
+        mobileMenu.style.display = isHidden ? 'block' : 'none';
+      });
+    }
+  });
+</script>
