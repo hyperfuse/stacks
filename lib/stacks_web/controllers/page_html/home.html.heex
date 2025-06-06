@@ -1,2 +1,220 @@
 <.flash_group flash={@flash} />
-<div>Home</div>
+<div class="min-h-screen bg-gray-100">
+  <!-- Header with Search and Navigation -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo/Brand -->
+        <div class="flex-shrink-0">
+          <h1 class="text-xl font-semibold text-gray-900">Stacks</h1>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-2xl mx-8">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search..."
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#" class="text-blue-600 border-b-2 border-blue-600 px-1 pb-1 text-sm font-medium">Everything</a>
+          <a href="#" class="text-gray-500 hover:text-gray-700 px-1 pb-1 text-sm font-medium border-b-2 border-transparent hover:border-gray-300">Stacks</a>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button type="button" class="text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 p-2 rounded-md" id="mobile-menu-button">
+            <span class="sr-only">Open main menu</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="md:hidden border-t border-gray-200" id="mobile-menu" style="display: none;">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a href="#" class="text-blue-600 bg-blue-50 block px-3 py-2 rounded-md text-base font-medium">Everything</a>
+          <a href="#" class="text-gray-500 hover:text-gray-700 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium">Stacks</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 auto-rows-max">
+    
+    <!-- Quote Card - Mark Twain -->
+    <a href="#" class="block bg-white rounded-lg p-6 shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="text-center">
+        <p class="text-sm text-gray-800 leading-relaxed mb-4">"It's not what we don't know that gets us in trouble. It's what we know for sure that just ain't so."</p>
+        <p class="text-xs text-gray-500">Quote by Mark Twain</p>
+      </div>
+    </a>
+
+    <!-- Pattern Inspiration Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-gradient-to-br from-pink-300 to-pink-400 h-32 flex items-center justify-center">
+        <div class="w-16 h-20 bg-yellow-400 rounded-lg relative">
+          <div class="absolute top-2 left-2 w-3 h-3 bg-black rounded-full"></div>
+          <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-2 bg-purple-600 rounded"></div>
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm text-gray-800">Pattern Inspiration</h3>
+      </div>
+    </a>
+
+    <!-- Leather Sneaker Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-white h-24 flex items-center justify-center">
+        <div class="w-20 h-12 bg-gradient-to-r from-gray-300 to-gray-400 rounded-lg transform -rotate-12"></div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm text-gray-800 mb-2">Leather Sneaker</h3>
+        <p class="text-xs text-gray-600 leading-relaxed">These big impacting, leveraged activities are the things that make up the key 20% of the 80/20 rule and the 4% of the 64/4 rule. To get good leverage, you need to start paying attention to and expand the things that give you the most leverage.</p>
+      </div>
+    </a>
+
+    <!-- Contact Info Card -->
+    <a href="#" class="block bg-white rounded-lg p-4 shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <h3 class="text-sm font-medium text-gray-800 mb-1">Stephani phone</h3>
+      <p class="text-sm text-gray-600">452 234 223</p>
+      <p class="text-xs text-gray-400 mt-2">Random Note</p>
+    </a>
+
+    <!-- Modern Art Portrait Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm row-span-2 hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-gradient-to-br from-red-500 to-pink-600 h-40 relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        <div class="absolute bottom-4 left-4 right-4">
+          <div class="w-12 h-12 bg-blue-400 rounded-full"></div>
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm text-gray-800">Modern Art Portrait</h3>
+      </div>
+    </a>
+
+    <!-- Color Palette Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="h-24 flex">
+        <div class="flex-1 bg-teal-300"></div>
+        <div class="flex-1 bg-yellow-300"></div>
+        <div class="flex-1 bg-pink-400"></div>
+        <div class="flex-1 bg-red-500"></div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm text-gray-800">Color Palette</h3>
+      </div>
+    </a>
+
+    <!-- Book Cover Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-blue-600 h-32 flex items-center justify-center relative">
+        <div class="text-white text-center">
+          <h4 class="text-xs font-bold mb-1">WALK ON</h4>
+          <h4 class="text-xs font-bold mb-1">THE MOON</h4>
+          <p class="text-xs opacity-80">by Kate Messner</p>
+        </div>
+      </div>
+    </a>
+
+    <!-- PDF Document Card -->
+    <a href="#" class="block bg-white rounded-lg p-6 shadow-sm text-center hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="text-red-500 text-2xl mb-2">📄</div>
+      <h3 class="text-sm font-medium text-gray-800">Important PDF</h3>
+      <p class="text-xs text-gray-600">paper title.</p>
+    </a>
+
+    <!-- Chair Furniture Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-white h-32 flex items-center justify-center">
+        <div class="w-16 h-20 bg-gradient-to-b from-amber-600 to-amber-800 rounded-t-lg relative">
+          <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-10 h-6 bg-amber-700 rounded"></div>
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm text-gray-800">Chair for apartment</h3>
+      </div>
+    </a>
+
+    <!-- Marketing Plan Card -->
+    <a href="#" class="block bg-white rounded-lg p-4 shadow-sm row-span-2 hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <h3 class="text-sm font-medium text-gray-800 mb-3">The 1-Page Marketing Plan</h3>
+      <p class="text-xs text-gray-600 leading-relaxed mb-4">There are various areas of your business where you could start looking for leverage points. You may look at getting 50% better at your copywriting skills, 10% better at your prospecting, 30% better at your sales scripts.</p>
+      <p class="text-xs text-gray-600 leading-relaxed">The most powerful outcomes of any compound process are delayed. You need to be patient. In the short-term, any improvement is relatively small.</p>
+    </a>
+
+    <!-- Thermostat Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-white h-20 flex items-center justify-center">
+        <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center">
+          <span class="text-white text-lg font-bold">52</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Swimming Quote Card -->
+    <a href="#" class="block bg-white rounded-lg p-4 shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <p class="text-xs text-gray-700 leading-relaxed">Throw a man in water over his head and the experience may teach him to swim. The same experience may cause another man to drown.</p>
+      <p class="text-xs text-gray-400 mt-2">Quotes</p>
+    </a>
+
+    <!-- New York Times Article Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-white h-20 flex items-center justify-center p-4">
+        <div class="text-center">
+          <div class="w-8 h-8 bg-yellow-400 rounded mb-1 mx-auto"></div>
+          <div class="text-xs text-gray-600">Article preview</div>
+        </div>
+      </div>
+      <div class="p-4">
+        <h3 class="text-sm text-gray-800">New York Times Article</h3>
+      </div>
+    </a>
+
+    <!-- Photo Collage Card -->
+    <a href="#" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+      <div class="bg-white h-24 p-2">
+        <div class="grid grid-cols-3 gap-1 h-full">
+          <div class="bg-blue-300 rounded"></div>
+          <div class="bg-pink-300 rounded"></div>
+          <div class="bg-yellow-300 rounded"></div>
+          <div class="bg-green-300 rounded"></div>
+          <div class="bg-purple-300 rounded"></div>
+          <div class="bg-red-300 rounded"></div>
+        </div>
+      </div>
+    </a>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile menu toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        const isHidden = mobileMenu.style.display === 'none' || mobileMenu.style.display === '';
+        mobileMenu.style.display = isHidden ? 'block' : 'none';
+      });
+    }
+  });
+</script>
