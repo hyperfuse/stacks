@@ -12,7 +12,7 @@ defmodule Stacks.ArticlesFixtures do
     item = Stacks.ItemsFixtures.item_fixture(%{
       item_type: "article",
       source_url: "https://example.com/article",
-      enrichment_status: "pending"
+      enrichment_status: :pending
     })
 
     {:ok, article} =

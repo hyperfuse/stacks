@@ -21,14 +21,14 @@ defmodule Stacks.ItemsTest do
     end
 
     test "create_item/1 with valid data creates a item" do
-      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "some source_url", text_content: "some text_content", enrichment_status: "pending"}
+      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "some source_url", text_content: "some text_content", enrichment_status: :pending}
 
       assert {:ok, %Item{} = item} = Items.create_item(valid_attrs)
       assert item.item_type == "some item_type"
       assert item.metadata == %{}
       assert item.source_url == "some source_url"
       assert item.text_content == "some text_content"
-      assert item.enrichment_status == "pending"
+      assert item.enrichment_status == :pending
     end
 
     test "create_item/1 with invalid data returns error changeset" do
@@ -37,14 +37,14 @@ defmodule Stacks.ItemsTest do
 
     test "update_item/2 with valid data updates the item" do
       item = item_fixture()
-      update_attrs = %{item_type: "some updated item_type", metadata: %{}, source_url: "some updated source_url", text_content: "some updated text_content", enrichment_status: "completed"}
+      update_attrs = %{item_type: "some updated item_type", metadata: %{}, source_url: "some updated source_url", text_content: "some updated text_content", enrichment_status: :completed}
 
       assert {:ok, %Item{} = item} = Items.update_item(item, update_attrs)
       assert item.item_type == "some updated item_type"
       assert item.metadata == %{}
       assert item.source_url == "some updated source_url"
       assert item.text_content == "some updated text_content"
-      assert item.enrichment_status == "completed"
+      assert item.enrichment_status == :completed
     end
 
     test "update_item/2 with invalid data returns error changeset" do

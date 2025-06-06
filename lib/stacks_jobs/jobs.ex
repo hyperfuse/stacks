@@ -12,7 +12,7 @@ defmodule StacksJobs.Workers.WebpageEnricher do
     item = article.item
     
     # Update item enrichment status to processing
-    Items.update_item(item, %{"enrichment_status" => "processing"})
+    Items.update_item(item, %{"enrichment_status" => :processing})
 
     try do
       # Extract content using Readability
@@ -30,11 +30,11 @@ defmodule StacksJobs.Workers.WebpageEnricher do
       })
 
       # Update item enrichment status to completed
-      Items.update_item(item, %{"enrichment_status" => "completed"})
+      Items.update_item(item, %{"enrichment_status" => :completed})
     rescue
       error ->
         IO.puts("Error enriching article #{article_id}: #{inspect(error)}")
-        Items.update_item(item, %{"enrichment_status" => "failed"})
+        Items.update_item(item, %{"enrichment_status" => :failed})
         {:error, error}
     end
   end
