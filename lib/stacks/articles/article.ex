@@ -10,6 +10,7 @@ defmodule Stacks.Articles.Article do
     field :source_url, :string
     field :content, :string
     field :metadata, :map
+    field :image, :binary
     belongs_to :item, Stacks.Items.Item, type: :string
     belongs_to :user, Stacks.Accounts.User, type: :string
     timestamps(type: :utc_datetime)
@@ -21,7 +22,7 @@ defmodule Stacks.Articles.Article do
   @doc false
   def changeset(article, attrs) do
     article
-    |> cast(attrs, [:title, :source_url, :content, :metadata, :item_id, :user_id])
+    |> cast(attrs, [:title, :source_url, :content, :metadata, :image, :item_id, :user_id])
     |> validate_required([:source_url, :item_id])
     |> put_id()
   end
