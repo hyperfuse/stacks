@@ -12,6 +12,7 @@ defmodule Stacks.Items.Item do
     field :text_content, :string
     field :enrichment_status, Ecto.Enum, values: [:pending, :processing, :completed, :failed], default: :pending
     field :user_id, :string
+    has_one :article, Stacks.Articles.Article
     timestamps(type: :utc_datetime)
   end
 
