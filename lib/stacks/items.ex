@@ -39,7 +39,6 @@ defmodule Stacks.Items do
     |> Repo.preload(:article)
   end
 
-
   @doc """
   Gets a single item.
 
@@ -128,12 +127,12 @@ defmodule Stacks.Items do
     case attrs["source_url"] || attrs[:source_url] do
       nil ->
         create_item(attrs)
-      
+
       source_url ->
         case get_item_by_source_url(source_url) do
           nil ->
             create_item(attrs)
-          
+
           existing_item ->
             {:existing, existing_item}
         end

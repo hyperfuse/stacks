@@ -8,7 +8,13 @@ defmodule Stacks.ItemsTest do
 
     import Stacks.ItemsFixtures
 
-    @invalid_attrs %{item_type: nil, metadata: nil, source_url: nil, text_content: nil, enrichment_status: nil}
+    @invalid_attrs %{
+      item_type: nil,
+      metadata: nil,
+      source_url: nil,
+      text_content: nil,
+      enrichment_status: nil
+    }
 
     test "list_items/0 returns all items" do
       item = item_fixture()
@@ -21,7 +27,13 @@ defmodule Stacks.ItemsTest do
     end
 
     test "create_item/1 with valid data creates a item" do
-      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "some source_url", text_content: "some text_content", enrichment_status: :pending}
+      valid_attrs = %{
+        item_type: "some item_type",
+        metadata: %{},
+        source_url: "some source_url",
+        text_content: "some text_content",
+        enrichment_status: :pending
+      }
 
       assert {:ok, %Item{} = item} = Items.create_item(valid_attrs)
       assert item.item_type == "some item_type"
@@ -37,7 +49,14 @@ defmodule Stacks.ItemsTest do
 
     test "update_item/2 with valid data updates the item" do
       item = item_fixture()
-      update_attrs = %{item_type: "some updated item_type", metadata: %{}, source_url: "some updated source_url", text_content: "some updated text_content", enrichment_status: :completed}
+
+      update_attrs = %{
+        item_type: "some updated item_type",
+        metadata: %{},
+        source_url: "some updated source_url",
+        text_content: "some updated text_content",
+        enrichment_status: :completed
+      }
 
       assert {:ok, %Item{} = item} = Items.update_item(item, update_attrs)
       assert item.item_type == "some updated item_type"
@@ -65,11 +84,20 @@ defmodule Stacks.ItemsTest do
     end
 
     test "create_item/1 with duplicate source_url returns error changeset" do
-      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "duplicate_url", text_content: "some text_content", enrichment_status: :pending}
+      valid_attrs = %{
+        item_type: "some item_type",
+        metadata: %{},
+        source_url: "duplicate_url",
+        text_content: "some text_content",
+        enrichment_status: :pending
+      }
 
       assert {:ok, %Item{}} = Items.create_item(valid_attrs)
       assert {:error, %Ecto.Changeset{} = changeset} = Items.create_item(valid_attrs)
-      assert changeset.errors[:source_url] == {"has already been taken", [constraint: :unique, constraint_name: "items_source_url_index"]}
+
+      assert changeset.errors[:source_url] ==
+               {"has already been taken",
+                [constraint: :unique, constraint_name: "items_source_url_index"]}
     end
 
     test "get_item_by_source_url/1 returns the item with given source_url" do
@@ -82,7 +110,13 @@ defmodule Stacks.ItemsTest do
     end
 
     test "create_or_get_item/1 creates new item when source_url is unique" do
-      valid_attrs = %{item_type: "some item_type", metadata: %{}, source_url: "unique_url", text_content: "some text_content", enrichment_status: :pending}
+      valid_attrs = %{
+        item_type: "some item_type",
+        metadata: %{},
+        source_url: "unique_url",
+        text_content: "some text_content",
+        enrichment_status: :pending
+      }
 
       assert {:ok, %Item{} = item} = Items.create_or_get_item(valid_attrs)
       assert item.source_url == "unique_url"
@@ -90,8 +124,14 @@ defmodule Stacks.ItemsTest do
 
     test "create_or_get_item/1 returns existing item when source_url already exists" do
       existing_item = item_fixture()
-      
-      duplicate_attrs = %{item_type: "different type", metadata: %{foo: "bar"}, source_url: existing_item.source_url, text_content: "different content", enrichment_status: :completed}
+
+      duplicate_attrs = %{
+        item_type: "different type",
+        metadata: %{foo: "bar"},
+        source_url: existing_item.source_url,
+        text_content: "different content",
+        enrichment_status: :completed
+      }
 
       assert {:existing, %Item{} = returned_item} = Items.create_or_get_item(duplicate_attrs)
       assert returned_item.id == existing_item.id
