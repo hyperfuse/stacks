@@ -22,6 +22,22 @@ defmodule Stacks.Items do
   end
 
   @doc """
+  Returns the list of items with their associated articles preloaded.
+
+  ## Examples
+
+      iex> list_items_with_articles()
+      [%Item{article: %Article{} | nil}, ...]
+
+  """
+  def list_items_with_articles do
+    Item
+    |> Repo.all()
+    |> Repo.preload(:article)
+  end
+
+
+  @doc """
   Gets a single item.
 
   Raises `Ecto.NoResultsError` if the Item does not exist.
