@@ -3,7 +3,6 @@ defmodule Stacks.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-
       timestamps(type: :utc_datetime)
     end
   end

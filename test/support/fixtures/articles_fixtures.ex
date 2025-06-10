@@ -9,11 +9,12 @@ defmodule Stacks.ArticlesFixtures do
   """
   def article_fixture(attrs \\ %{}) do
     # Create an item first since article requires it
-    item = Stacks.ItemsFixtures.item_fixture(%{
-      item_type: "article",
-      source_url: "https://example.com/article",
-      enrichment_status: :pending
-    })
+    item =
+      Stacks.ItemsFixtures.item_fixture(%{
+        item_type: "article",
+        source_url: "https://example.com/article",
+        enrichment_status: :pending
+      })
 
     {:ok, article} =
       attrs

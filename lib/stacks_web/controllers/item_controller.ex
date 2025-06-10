@@ -17,17 +17,17 @@ defmodule StacksWeb.ItemController do
     case Items.create_or_get_item(item_params) do
       {:ok, %Item{} = item} ->
         {:ok, _job} = StacksJobs.Workers.WebpageEnricher.insert(%{"id" => item.id})
-        
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", ~p"/api/items/#{item}")
         |> render(:show, item: item)
-      
+
       {:existing, %Item{} = item} ->
         conn
         |> put_status(:ok)
         |> render(:show, item: item)
-      
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

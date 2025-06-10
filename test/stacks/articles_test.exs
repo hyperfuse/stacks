@@ -21,8 +21,20 @@ defmodule Stacks.ArticlesTest do
     end
 
     test "create_article/1 with valid data creates a article" do
-      item = Stacks.ItemsFixtures.item_fixture(%{item_type: "article", source_url: "https://test.com", enrichment_status: :pending})
-      valid_attrs = %{title: "some title", source_url: "https://test.com", content: "some content", metadata: %{}, item_id: item.id}
+      item =
+        Stacks.ItemsFixtures.item_fixture(%{
+          item_type: "article",
+          source_url: "https://test.com",
+          enrichment_status: :pending
+        })
+
+      valid_attrs = %{
+        title: "some title",
+        source_url: "https://test.com",
+        content: "some content",
+        metadata: %{},
+        item_id: item.id
+      }
 
       assert {:ok, %Article{} = article} = Articles.create_article(valid_attrs)
       assert article.title == "some title"
@@ -37,7 +49,13 @@ defmodule Stacks.ArticlesTest do
 
     test "update_article/2 with valid data updates the article" do
       article = article_fixture()
-      update_attrs = %{title: "some updated title", source_url: "https://updated.com", content: "some updated content", metadata: %{updated: true}}
+
+      update_attrs = %{
+        title: "some updated title",
+        source_url: "https://updated.com",
+        content: "some updated content",
+        metadata: %{updated: true}
+      }
 
       assert {:ok, %Article{} = article} = Articles.update_article(article, update_attrs)
       assert article.title == "some updated title"

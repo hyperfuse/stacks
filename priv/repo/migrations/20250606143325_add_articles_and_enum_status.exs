@@ -4,7 +4,7 @@ defmodule Stacks.Repo.Migrations.AddArticlesAndEnumStatus do
   def up do
     # Create the enum type for enrichment status
     execute "CREATE TYPE enrichment_status_type AS ENUM ('pending', 'processing', 'completed', 'failed')"
-    
+
     # Add enrichment_status field to items table using the enum
     alter table(:items) do
       add :enrichment_status, :enrichment_status_type, default: "pending"
@@ -36,7 +36,7 @@ defmodule Stacks.Repo.Migrations.AddArticlesAndEnumStatus do
 
     # Drop enrichment_status from items
     drop index(:items, [:enrichment_status])
-    
+
     alter table(:items) do
       remove :enrichment_status, :enrichment_status_type
     end

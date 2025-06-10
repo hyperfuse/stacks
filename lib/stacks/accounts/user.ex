@@ -6,8 +6,6 @@ defmodule Stacks.Accounts.User do
   @foreign_key_type :string
 
   schema "users" do
-
-
     timestamps(type: :utc_datetime)
   end
 
@@ -25,5 +23,6 @@ defmodule Stacks.Accounts.User do
   defp put_id(%Ecto.Changeset{data: %{id: nil}} = changeset) do
     put_change(changeset, :id, generate_id())
   end
+
   defp put_id(changeset), do: changeset
 end

@@ -7,7 +7,12 @@
         <div class="flex items-center space-x-4">
           <a href="/" class="inline-flex items-center text-gray-500 hover:text-gray-700 text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back
           </a>
@@ -16,8 +21,8 @@
       </div>
     </div>
   </header>
-
-  <!-- Two Column Layout -->
+  
+<!-- Two Column Layout -->
   <div class="relative">
     <%= if @item.item_type == "article" && @item.article do %>
       <!-- Main Content Area with Sidebar -->
@@ -26,20 +31,39 @@
         <div class="flex-1 lg:pr-80">
           <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <!-- Mobile Sidebar Toggle -->
-            <button class="lg:hidden fixed top-20 right-4 z-50 bg-white border border-gray-300 rounded-md p-2 shadow-sm" 
-                    onclick="toggleSidebar()">
-              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <button
+              class="lg:hidden fixed top-20 right-4 z-50 bg-white border border-gray-300 rounded-md p-2 shadow-sm"
+              onclick="toggleSidebar()"
+            >
+              <svg
+                class="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
-
-            <!-- Article Header -->
+            
+<!-- Article Header -->
             <div class="mb-8">
               <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
                 <%= if @item.favicon_url do %>
-                  <img src={@item.favicon_url} alt="" class="w-4 h-4 rounded-sm" onerror="this.style.display='none'" />
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
                 <% end %>
-                <span class="uppercase tracking-wide font-medium"><%= @item.source_website || @item.article.metadata["domain"] || "Unknown Source" %></span>
+                <span class="uppercase tracking-wide font-medium">
+                  {@item.source_website || @item.article.metadata["domain"] || "Unknown Source"}
+                </span>
                 <%= if @item.article.metadata["listen"] do %>
                   <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-800">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -49,59 +73,85 @@
                   </button>
                 <% end %>
               </div>
-              
+
               <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-6">
-                <%= @item.article.title || "Untitled Article" %>
+                {@item.article.title || "Untitled Article"}
               </h1>
-              
+
               <div class="flex items-center space-x-4 text-sm text-gray-600 mb-8">
                 <%= if @item.article.metadata["author"] do %>
                   <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                       <span class="text-xs font-medium text-gray-600">
-                        <%= String.first(@item.article.metadata["author"]) %>
+                        {String.first(@item.article.metadata["author"])}
                       </span>
                     </div>
-                    <span><%= @item.article.metadata["author"] %></span>
+                    <span>{@item.article.metadata["author"]}</span>
                   </div>
                 <% end %>
                 <%= if @item.article.metadata["published_date"] do %>
-                  <span>• <%= @item.article.metadata["published_date"] %></span>
+                  <span>• {@item.article.metadata["published_date"]}</span>
                 <% end %>
                 <%= if @item.article.metadata["read_time"] do %>
-                  <span>• <%= @item.article.metadata["read_time"] %></span>
+                  <span>• {@item.article.metadata["read_time"]}</span>
                 <% end %>
               </div>
             </div>
-
-            <!-- Article Image -->
+            
+<!-- Article Image -->
             <%= if @item.article.image do %>
               <div class="mb-8">
-                <img 
-                  src={"data:image/jpeg;base64,#{Base.encode64(@item.article.image)}"} 
-                  alt={@item.article.title || "Article image"} 
+                <img
+                  src={"data:image/jpeg;base64,#{Base.encode64(@item.article.image)}"}
+                  alt={@item.article.title || "Article image"}
                   class="w-full h-auto rounded-lg shadow-sm"
                 />
               </div>
             <% end %>
-
-            <!-- Article Content -->
+            
+<!-- Article Content -->
             <article class="prose prose-lg prose-gray max-w-none">
-              <%= if @item.article.content do %>
+              <%= if @item.article.html_content do %>
                 <div class="article-content">
-                  <%= raw(@item.article.content) %>
+                  {raw(@item.article.html_content)}
                 </div>
               <% else %>
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                  <svg class="w-8 h-8 text-yellow-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    class="w-8 h-8 text-yellow-400 mx-auto mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <p class="text-yellow-800 font-medium mb-2">Content is being processed...</p>
-                  <p class="text-yellow-700 text-sm mb-4">We're extracting the full article content for you.</p>
-                  <a href={@item.source_url} target="_blank" rel="noopener noreferrer" 
-                     class="inline-flex items-center px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-md transition-colors duration-200">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  <p class="text-yellow-700 text-sm mb-4">
+                    We're extracting the full article content for you.
+                  </p>
+                  <a
+                    href={@item.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-md transition-colors duration-200"
+                  >
+                    <svg
+                      class="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
                     </svg>
                     Read original article
                   </a>
@@ -110,35 +160,49 @@
             </article>
           </div>
         </div>
-
-        <!-- Sticky Sidebar -->
-        <div id="sidebar" class="fixed top-14 right-0 w-80 h-screen bg-white border-l border-gray-200 overflow-y-auto z-40 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out hidden lg:block">
+        
+<!-- Sticky Sidebar -->
+        <div
+          id="sidebar"
+          class="fixed top-14 right-0 w-80 h-screen bg-white border-l border-gray-200 overflow-y-auto z-40 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out hidden lg:block"
+        >
           <div class="w-full p-6">
             <!-- Article Title in Sidebar -->
             <div class="mb-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-2">
-                <%= @item.article.title || "Untitled Article" %>
+                {@item.article.title || "Untitled Article"}
               </h2>
               <div class="flex items-center space-x-2 text-sm text-gray-600">
                 <%= if @item.favicon_url do %>
-                  <img src={@item.favicon_url} alt="" class="w-4 h-4 rounded-sm" onerror="this.style.display='none'" />
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
                 <% end %>
-                <span><%= @item.source_website || @item.article.metadata["domain"] || "unknown" %></span>
+                <span>
+                  {@item.source_website || @item.article.metadata["domain"] || "unknown"}
+                </span>
               </div>
             </div>
-
-            <!-- Author Info -->
+            
+<!-- Author Info -->
             <%= if @item.article.metadata["author"] do %>
               <div class="mb-6 pb-6 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
                   <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
                     <span class="text-sm font-medium text-gray-600">
-                      <%= String.first(@item.article.metadata["author"]) %>
+                      {String.first(@item.article.metadata["author"])}
                     </span>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900"><%= @item.article.metadata["author"] %></p>
-                    <p class="text-xs text-gray-500">@<%= String.downcase(String.replace(@item.article.metadata["author"], " ", "")) %></p>
+                    <p class="text-sm font-medium text-gray-900">
+                      {@item.article.metadata["author"]}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      @{String.downcase(String.replace(@item.article.metadata["author"], " ", ""))}
+                    </p>
                   </div>
                 </div>
                 <button class="mt-3 w-full text-center py-2 text-sm text-blue-600 hover:text-blue-800 border border-blue-200 rounded-md hover:bg-blue-50 transition-colors">
@@ -146,21 +210,23 @@
                 </button>
               </div>
             <% end %>
-
-            <!-- Summary Section -->
+            
+<!-- Summary Section -->
             <div class="mb-6">
               <h3 class="text-sm font-semibold text-gray-900 mb-2">SUMMARY</h3>
               <p class="text-sm text-gray-700 leading-relaxed">
                 <%= if @item.article.metadata["description"] do %>
-                  <%= @item.article.metadata["description"] %>
+                  {@item.article.metadata["description"]}
                 <% else %>
-                  This article discusses important topics related to <%= @item.article.metadata["domain"] || "the subject matter" %>.
+                  This article discusses important topics related to {@item.article.metadata[
+                    "domain"
+                  ] || "the subject matter"}.
                 <% end %>
               </p>
               <p class="text-xs text-gray-500 mt-2">Summarized by Ghostreader</p>
             </div>
-
-            <!-- Metadata Section -->
+            
+<!-- Metadata Section -->
             <div class="mb-6">
               <h3 class="text-sm font-semibold text-gray-900 mb-3">METADATA</h3>
               <div class="space-y-2 text-sm">
@@ -168,81 +234,105 @@
                   <span class="text-gray-600">Type</span>
                   <span class="text-gray-900">Article</span>
                 </div>
-                
+
                 <%= if @item.source_website || @item.article.metadata["domain"] do %>
                   <div class="flex justify-between">
                     <span class="text-gray-600">Source</span>
                     <div class="flex items-center space-x-2">
                       <%= if @item.favicon_url do %>
-                        <img src={@item.favicon_url} alt="" class="w-3 h-3 rounded-sm" onerror="this.style.display='none'" />
+                        <img
+                          src={@item.favicon_url}
+                          alt=""
+                          class="w-3 h-3 rounded-sm"
+                          onerror="this.style.display='none'"
+                        />
                       <% end %>
-                      <span class="text-gray-900"><%= @item.source_website || @item.article.metadata["domain"] %></span>
+                      <span class="text-gray-900">
+                        {@item.source_website || @item.article.metadata["domain"]}
+                      </span>
                     </div>
                   </div>
                 <% end %>
-                
+
                 <%= if @item.article.metadata["published_date"] do %>
                   <div class="flex justify-between">
                     <span class="text-gray-600">Published</span>
-                    <span class="text-gray-900"><%= @item.article.metadata["published_date"] %></span>
+                    <span class="text-gray-900">{@item.article.metadata["published_date"]}</span>
                   </div>
                 <% end %>
-                
+
                 <%= if @item.article.metadata["read_time"] do %>
                   <div class="flex justify-between">
                     <span class="text-gray-600">Length</span>
-                    <span class="text-gray-900"><%= @item.article.metadata["read_time"] %></span>
+                    <span class="text-gray-900">{@item.article.metadata["read_time"]}</span>
                   </div>
                 <% end %>
-                
+
                 <div class="flex justify-between">
                   <span class="text-gray-600">Saved</span>
-                  <span class="text-gray-900"><%= Calendar.strftime(@item.inserted_at, "%b %d, %Y") %></span>
+                  <span class="text-gray-900">
+                    {Calendar.strftime(@item.inserted_at, "%b %d, %Y")}
+                  </span>
                 </div>
-                
+
                 <div class="flex justify-between">
                   <span class="text-gray-600">Progress</span>
                   <span class="text-gray-900">0% (unread)</span>
                 </div>
-                
+
                 <div class="flex justify-between">
                   <span class="text-gray-600">Language</span>
-                  <span class="text-gray-900"><%= @item.article.metadata["language"] || "English" %></span>
+                  <span class="text-gray-900">
+                    {@item.article.metadata["language"] || "English"}
+                  </span>
                 </div>
               </div>
             </div>
-
-            <!-- Edit Metadata Button -->
+            
+<!-- Edit Metadata Button -->
             <button class="w-full text-center py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors mb-4">
               Edit metadata
             </button>
-
-            <!-- View Original Link -->
-            <a href={@item.source_url} target="_blank" rel="noopener noreferrer" 
-               class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm">
+            
+<!-- View Original Link -->
+            <a
+              href={@item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm"
+            >
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
               </svg>
               View original
             </a>
           </div>
         </div>
       </div>
-      <% else %>
-        <!-- Non-article items -->
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div class="text-center py-12">
-            <h1 class="text-2xl font-bold text-gray-900 mb-4">Item Details</h1>
-            <p class="text-gray-600">This item type is not yet supported for detailed viewing.</p>
-            <div class="mt-8">
-              <a href={@item.source_url} target="_blank" rel="noopener noreferrer" 
-                 class="text-blue-600 hover:text-blue-800 underline">
-                View original source
-              </a>
-            </div>
+    <% else %>
+      <!-- Non-article items -->
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="text-center py-12">
+          <h1 class="text-2xl font-bold text-gray-900 mb-4">Item Details</h1>
+          <p class="text-gray-600">This item type is not yet supported for detailed viewing.</p>
+          <div class="mt-8">
+            <a
+              href={@item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-600 hover:text-blue-800 underline"
+            >
+              View original source
+            </a>
           </div>
         </div>
-      <% end %>
+      </div>
+    <% end %>
   </div>
 </div>
 

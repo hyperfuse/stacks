@@ -21,6 +21,8 @@ defmodule StacksWeb.ArticleJSON do
       title: article.title,
       source_url: article.source_url,
       content: article.content,
+      html_content: article.html_content,
+      text_content: article.text_content,
       metadata: article.metadata,
       image: encode_image(article.image),
       item_id: article.item_id,
@@ -29,6 +31,7 @@ defmodule StacksWeb.ArticleJSON do
   end
 
   defp encode_image(nil), do: nil
+
   defp encode_image(image_binary) when is_binary(image_binary) do
     Base.encode64(image_binary)
   end

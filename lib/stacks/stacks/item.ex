@@ -30,5 +30,6 @@ defmodule Stacks.Stacks.Item do
   defp put_id(%Ecto.Changeset{data: %{id: nil}} = changeset) do
     put_change(changeset, :id, generate_id())
   end
+
   defp put_id(changeset), do: changeset
 end

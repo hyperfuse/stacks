@@ -9,6 +9,8 @@ defmodule Stacks.Articles.Article do
     field :title, :string
     field :source_url, :string
     field :content, :string
+    field :html_content, :string
+    field :text_content, :string
     field :metadata, :map
     field :image, :binary
     belongs_to :item, Stacks.Items.Item, type: :string
@@ -22,7 +24,17 @@ defmodule Stacks.Articles.Article do
   @doc false
   def changeset(article, attrs) do
     article
-    |> cast(attrs, [:title, :source_url, :content, :metadata, :image, :item_id, :user_id])
+    |> cast(attrs, [
+      :title,
+      :source_url,
+      :content,
+      :html_content,
+      :text_content,
+      :metadata,
+      :image,
+      :item_id,
+      :user_id
+    ])
     |> validate_required([:source_url, :item_id])
     |> put_id()
   end
@@ -30,5 +42,6 @@ defmodule Stacks.Articles.Article do
   defp put_id(%Ecto.Changeset{data: %{id: nil}} = changeset) do
     put_change(changeset, :id, generate_id())
   end
+
   defp put_id(changeset), do: changeset
 end
