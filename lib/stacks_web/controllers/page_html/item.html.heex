@@ -20,85 +20,97 @@
   <!-- Two Column Layout -->
   <div class="relative">
     <%= if @item.item_type == "article" && @item.article do %>
-      <!-- Centered Article Content -->
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <!-- Article Header -->
-          <div class="mb-8">
-            <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-              <span class="uppercase tracking-wide font-medium"><%= @item.article.metadata["domain"] || "Unknown Source" %></span>
-              <%= if @item.article.metadata["listen"] do %>
-                <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-800">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                  <span>Listen</span>
-                </button>
-              <% end %>
-            </div>
-            
-            <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-6">
-              <%= @item.article.title || "Untitled Article" %>
-            </h1>
-            
-            <div class="flex items-center space-x-4 text-sm text-gray-600 mb-8">
-              <%= if @item.article.metadata["author"] do %>
-                <div class="flex items-center space-x-2">
-                  <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span class="text-xs font-medium text-gray-600">
-                      <%= String.first(@item.article.metadata["author"]) %>
-                    </span>
-                  </div>
-                  <span><%= @item.article.metadata["author"] %></span>
-                </div>
-              <% end %>
-              <%= if @item.article.metadata["published_date"] do %>
-                <span>• <%= @item.article.metadata["published_date"] %></span>
-              <% end %>
-              <%= if @item.article.metadata["read_time"] do %>
-                <span>• <%= @item.article.metadata["read_time"] %></span>
-              <% end %>
-            </div>
-          </div>
+      <!-- Main Content Area with Sidebar -->
+      <div class="flex">
+        <!-- Article Content -->
+        <div class="flex-1 lg:pr-80">
+          <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Mobile Sidebar Toggle -->
+            <button class="lg:hidden fixed top-20 right-4 z-50 bg-white border border-gray-300 rounded-md p-2 shadow-sm" 
+                    onclick="toggleSidebar()">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
 
-          <!-- Article Image -->
-          <%= if @item.article.image do %>
+            <!-- Article Header -->
             <div class="mb-8">
-              <img 
-                src={"data:image/jpeg;base64,#{Base.encode64(@item.article.image)}"} 
-                alt={@item.article.title || "Article image"} 
-                class="w-full h-auto rounded-lg shadow-sm"
-              />
-            </div>
-          <% end %>
-
-          <!-- Article Content -->
-          <article class="prose prose-lg prose-gray max-w-none">
-            <%= if @item.article.content do %>
-              <div class="article-content">
-                <%= raw(@item.article.content) %>
+              <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+                <span class="uppercase tracking-wide font-medium"><%= @item.article.metadata["domain"] || "Unknown Source" %></span>
+                <%= if @item.article.metadata["listen"] do %>
+                  <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-800">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <span>Listen</span>
+                  </button>
+                <% end %>
               </div>
-            <% else %>
-              <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                <svg class="w-8 h-8 text-yellow-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="text-yellow-800 font-medium mb-2">Content is being processed...</p>
-                <p class="text-yellow-700 text-sm mb-4">We're extracting the full article content for you.</p>
-                <a href={@item.source_url} target="_blank" rel="noopener noreferrer" 
-                   class="inline-flex items-center px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-md transition-colors duration-200">
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                  Read original article
-                </a>
+              
+              <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-6">
+                <%= @item.article.title || "Untitled Article" %>
+              </h1>
+              
+              <div class="flex items-center space-x-4 text-sm text-gray-600 mb-8">
+                <%= if @item.article.metadata["author"] do %>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span class="text-xs font-medium text-gray-600">
+                        <%= String.first(@item.article.metadata["author"]) %>
+                      </span>
+                    </div>
+                    <span><%= @item.article.metadata["author"] %></span>
+                  </div>
+                <% end %>
+                <%= if @item.article.metadata["published_date"] do %>
+                  <span>• <%= @item.article.metadata["published_date"] %></span>
+                <% end %>
+                <%= if @item.article.metadata["read_time"] do %>
+                  <span>• <%= @item.article.metadata["read_time"] %></span>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Article Image -->
+            <%= if @item.article.image do %>
+              <div class="mb-8">
+                <img 
+                  src={"data:image/jpeg;base64,#{Base.encode64(@item.article.image)}"} 
+                  alt={@item.article.title || "Article image"} 
+                  class="w-full h-auto rounded-lg shadow-sm"
+                />
               </div>
             <% end %>
-          </article>
+
+            <!-- Article Content -->
+            <article class="prose prose-lg prose-gray max-w-none">
+              <%= if @item.article.content do %>
+                <div class="article-content">
+                  <%= raw(@item.article.content) %>
+                </div>
+              <% else %>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                  <svg class="w-8 h-8 text-yellow-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="text-yellow-800 font-medium mb-2">Content is being processed...</p>
+                  <p class="text-yellow-700 text-sm mb-4">We're extracting the full article content for you.</p>
+                  <a href={@item.source_url} target="_blank" rel="noopener noreferrer" 
+                     class="inline-flex items-center px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-md transition-colors duration-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    Read original article
+                  </a>
+                </div>
+              <% end %>
+            </article>
+          </div>
         </div>
 
-        <!-- Fixed Right Sidebar -->
-        <div class="fixed top-20 right-6 w-80 h-screen overflow-y-auto">
-          <div class="bg-white border-l border-gray-200 pl-6">
+        <!-- Sticky Sidebar -->
+        <div id="sidebar" class="fixed top-14 right-0 w-80 h-screen bg-white border-l border-gray-200 overflow-y-auto z-40 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out hidden lg:block">
+          <div class="w-full p-6">
             <!-- Article Title in Sidebar -->
             <div class="mb-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-2">
@@ -202,6 +214,7 @@
             </a>
           </div>
         </div>
+      </div>
       <% else %>
         <!-- Non-article items -->
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -219,3 +232,47 @@
       <% end %>
   </div>
 </div>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const isHidden = sidebar.classList.contains('translate-x-full');
+    
+    if (isHidden) {
+      sidebar.classList.remove('translate-x-full', 'hidden');
+      sidebar.classList.add('translate-x-0', 'block');
+    } else {
+      sidebar.classList.remove('translate-x-0', 'block');
+      sidebar.classList.add('translate-x-full', 'hidden');
+    }
+  }
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleButton = event.target.closest('button[onclick="toggleSidebar()"]');
+    
+    if (!sidebar || !toggleButton) return;
+    
+    if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+      if (window.innerWidth < 1024) { // lg breakpoint
+        sidebar.classList.remove('translate-x-0', 'block');
+        sidebar.classList.add('translate-x-full', 'hidden');
+      }
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+    
+    if (window.innerWidth >= 1024) { // lg breakpoint
+      sidebar.classList.remove('translate-x-full', 'hidden');
+      sidebar.classList.add('translate-x-0', 'block');
+    } else {
+      sidebar.classList.remove('translate-x-0', 'block');
+      sidebar.classList.add('translate-x-full', 'hidden');
+    }
+  });
+</script>
