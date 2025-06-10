@@ -21,7 +21,9 @@ defmodule StacksWeb.ItemJSON do
       item_type: item.item_type,
       source_url: item.source_url,
       text_content: item.text_content,
-      metadata: item.metadata
+      metadata: item.metadata,
+      inserted_at: item.inserted_at,
+      updated_at: item.updated_at
     }
   end
 end

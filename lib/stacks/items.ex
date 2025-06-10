@@ -18,7 +18,9 @@ defmodule Stacks.Items do
 
   """
   def list_items do
-    Repo.all(Item)
+    Item
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
   end
 
   @doc """
@@ -32,6 +34,7 @@ defmodule Stacks.Items do
   """
   def list_items_with_articles do
     Item
+    |> order_by(desc: :inserted_at)
     |> Repo.all()
     |> Repo.preload(:article)
   end
