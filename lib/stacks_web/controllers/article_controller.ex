@@ -4,7 +4,7 @@ defmodule StacksWeb.ArticleController do
   alias Stacks.Articles
   alias Stacks.Articles.Article
   alias Stacks.Items
-  alias StacksJobs.Workers.WebpageEnricher
+  alias StacksJobs.Workers.ArticleEnricher
 
   action_fallback StacksWeb.FallbackController
 
@@ -28,7 +28,7 @@ defmodule StacksWeb.ArticleController do
         case Articles.create_article(article_params_with_item) do
           {:ok, article} ->
             # Enqueue the enrichment job
-            WebpageEnricher.insert(%{"article_id" => article.id})
+            ArticleEnricher.insert(%{"article_id" => article.id})
 
             conn
             |> put_status(:created)

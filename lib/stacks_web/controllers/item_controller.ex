@@ -16,7 +16,7 @@ defmodule StacksWeb.ItemController do
 
     case Items.create_or_get_item(item_params) do
       {:ok, %Item{} = item} ->
-        {:ok, _job} = StacksJobs.Workers.WebpageEnricher.insert(%{"id" => item.id})
+        {:ok, _job} = StacksJobs.Workers.ArticleEnricher.insert(%{"id" => item.id})
 
         conn
         |> put_status(:created)

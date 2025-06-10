@@ -96,7 +96,7 @@ defmodule Mix.Tasks.SeedItems do
 
   defp queue_enrichment_job(article) do
     %{article_id: article.id}
-    |> StacksJobs.Workers.WebpageEnricher.new()
+    |> StacksJobs.Workers.ArticleEnricher.new()
     |> Oban.insert()
   end
 end

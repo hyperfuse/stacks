@@ -1,4 +1,4 @@
-defmodule StacksJobs.Workers.WebpageEnricher do
+defmodule StacksJobs.Workers.ArticleEnricher do
   use Oban.Worker, queue: :default, max_attempts: 3
   alias Stacks.Articles
   alias Stacks.Items
@@ -56,7 +56,7 @@ defmodule StacksJobs.Workers.WebpageEnricher do
   end
 
   def insert(%{"article_id" => article_id}) do
-    StacksJobs.Workers.WebpageEnricher.new(%{"article_id" => article_id})
+    StacksJobs.Workers.ArticleEnricher.new(%{"article_id" => article_id})
     |> Oban.insert()
   end
 
