@@ -60,6 +60,7 @@ defmodule Stacks.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:oban, "~> 2.19"},
+      {:oban_web, "~> 2.11"},
       {:igniter, "~> 0.5", only: [:dev]},
       {:readability, "~> 0.12"},
       {:floki, ">= 0.30.0"},

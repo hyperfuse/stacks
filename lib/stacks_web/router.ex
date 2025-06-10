@@ -2,6 +2,8 @@ defmodule StacksWeb.Router do
   alias ItemController
   use StacksWeb, :router
 
+  import Oban.Web.Router
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -44,6 +46,12 @@ defmodule StacksWeb.Router do
 
       live_dashboard "/dashboard", metrics: StacksWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+
+    scope "/" do
+      pipe_through :browser
+
+      oban_dashboard("/oban")
     end
   end
 end
