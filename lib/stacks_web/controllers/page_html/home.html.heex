@@ -59,7 +59,7 @@
     <%= for item <- @items do %>
       <%= if item.item_type == "article" && item.article do %>
         <!-- Article Card -->
-        <a href={item.source_url} target="_blank" class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
+        <a href={~p"/items/#{item.id}"} class="block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50 transition-all duration-200 cursor-pointer">
           <%= if item.article.image do %>
             <div class="h-32 bg-gray-100 flex items-center justify-center overflow-hidden">
               <img src={"data:image/jpeg;base64,#{Base.encode64(item.article.image)}"} alt={item.article.title || "Article image"} class="w-full h-full object-cover" />
