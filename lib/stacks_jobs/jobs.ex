@@ -21,6 +21,9 @@ defmodule StacksJobs.Workers.WebpageEnricher do
       # Extract main image from webpage
       image_binary = extract_main_image(article.source_url)
 
+      # Extract source website and favicon
+      {source_website, favicon_url} = extract_website_info(article.source_url)
+
       # Update article with enriched content
       Articles.update_article(article, %{
         "title" => summary.title,
@@ -33,8 +36,12 @@ defmodule StacksJobs.Workers.WebpageEnricher do
         }
       })
 
-      # Update item enrichment status to completed
-      Items.update_item(item, %{"enrichment_status" => :completed})
+      # Update item with website info and enrichment status
+      Items.update_item(item, %{
+        "source_website" => source_website,
+        "favicon_url" => favicon_url,
+        "enrichment_status" => :completed
+      })
     rescue
       error ->
         IO.puts("Error enriching article #{article_id}: #{inspect(error)}")
@@ -173,5 +180,113 @@ defmodule StacksJobs.Workers.WebpageEnricher do
     |> String.split(";")
     |> List.first()
     |> String.trim()
+  end
+
+  # Extract website name and favicon URL from a webpage
+  defp extract_website_info(url) do
+    try do
+      case Finch.build(:get, url) |> Finch.request(Stacks.Finch) do
+        {:ok, %{status: 200, body: html}} ->
+          {:ok, document} = Floki.parse_document(html)
+          
+          # Extract website name
+          website_name = extract_website_name(document, url)
+          
+          # Extract favicon URL
+          favicon_url = extract_favicon_url(document, url)
+          
+          {website_name, favicon_url}
+        _ -> 
+          # Fallback to domain from URL
+          uri = URI.parse(url)
+          domain = uri.host || "Unknown Source"
+          {domain, nil}
+      end
+    rescue
+      _ -> 
+        # Fallback to domain from URL
+        uri = URI.parse(url)
+        domain = uri.host || "Unknown Source"
+        {domain, nil}
+    end
+  end
+
+  # Extract website name from HTML document
+  defp extract_website_name(document, url) do
+    # Try different methods to get website name, in order of preference
+    
+    # 1. Try og:site_name
+    og_site_name = Floki.find(document, "meta[property='og:site_name']")
+                   |> Floki.attribute("content")
+                   |> List.first()
+    
+    if og_site_name && og_site_name != "" do
+      og_site_name
+    else
+      # 2. Try twitter:site
+      twitter_site = Floki.find(document, "meta[name='twitter:site']")
+                     |> Floki.attribute("content")
+                     |> List.first()
+      
+      if twitter_site && twitter_site != "" do
+        # Remove @ symbol if present
+        String.replace(twitter_site, "@", "")
+      else
+        # 3. Try to extract from title tag
+        title = Floki.find(document, "title")
+                |> Floki.text()
+        
+        # Look for common patterns like "Title - Site Name" or "Title | Site Name"
+        cond do
+          String.contains?(title, " - ") ->
+            title |> String.split(" - ") |> List.last() |> String.trim()
+          String.contains?(title, " | ") ->
+            title |> String.split(" | ") |> List.last() |> String.trim()
+          true ->
+            # 4. Fallback to domain name
+            uri = URI.parse(url)
+            domain = uri.host || "Unknown Source"
+            
+            # Clean up common prefixes
+            domain
+            |> String.replace_prefix("www.", "")
+            |> String.split(".")
+            |> List.first()
+            |> String.capitalize()
+        end
+      end
+    end
+  end
+
+  # Extract favicon URL from HTML document
+  defp extract_favicon_url(document, base_url) do
+    # Try different favicon link types, in order of preference
+    favicon_selectors = [
+      "link[rel='icon'][type='image/png']",
+      "link[rel='icon'][type='image/svg+xml']",
+      "link[rel='icon']",
+      "link[rel='shortcut icon']",
+      "link[rel='apple-touch-icon']"
+    ]
+    
+    favicon_url = Enum.find_value(favicon_selectors, fn selector ->
+      Floki.find(document, selector)
+      |> Floki.attribute("href")
+      |> List.first()
+    end)
+    
+    cond do
+      favicon_url && favicon_url != "" ->
+        resolve_url(favicon_url, base_url)
+      true ->
+        # Fallback to /favicon.ico
+        uri = URI.parse(base_url)
+        if uri.scheme && uri.host do
+          port_part = if uri.port && uri.port != 80 && uri.port != 443, do: ":#{uri.port}", else: ""
+          "#{uri.scheme}://#{uri.host}#{port_part}/favicon.ico"
+        else
+          nil
+        end
+    end
   end
 end
