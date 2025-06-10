@@ -95,16 +95,8 @@ defmodule Mix.Tasks.SeedItems do
   end
 
   defp queue_enrichment_job(article) do
-    case Application.get_env(:stacks, :env) do
-      :dev ->
-        # In development, queue the enrichment job
-        %{article_id: article.id}
-        |> StacksJobs.Workers.WebpageEnricher.new()
-        |> Oban.insert()
-
-      _ ->
-        # In other environments, don't automatically queue jobs
-        :ok
-    end
+    %{article_id: article.id}
+    |> StacksJobs.Workers.WebpageEnricher.new()
+    |> Oban.insert()
   end
 end
