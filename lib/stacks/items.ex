@@ -57,6 +57,26 @@ defmodule Stacks.Items do
   def get_item!(id), do: Repo.get!(Item, id)
 
   @doc """
+  Gets a single item with its associated article preloaded.
+
+  Raises `Ecto.NoResultsError` if the Item does not exist.
+
+  ## Examples
+
+      iex> get_item_with_article!(123)
+      %Item{article: %Article{}}
+
+      iex> get_item_with_article!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_item_with_article!(id) do
+    Item
+    |> Repo.get!(id)
+    |> Repo.preload(:article)
+  end
+
+  @doc """
   Gets a single item by source_url.
 
   Returns `nil` if no item exists with the given source_url.

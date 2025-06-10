@@ -21,6 +21,7 @@ defmodule StacksWeb.Router do
   scope "/", StacksWeb do
     pipe_through :browser
     get "/", PageController, :home
+    get "/items/:id", PageController, :item
   end
 
   scope "/api", StacksWeb do
