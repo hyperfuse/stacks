@@ -44,7 +44,9 @@ defmodule StacksWeb.ItemControllerTest do
                "item_type" => "some item_type",
                "metadata" => %{},
                "source_url" => "some source_url",
-               "text_content" => "some text_content"
+               "text_content" => "some text_content",
+               "inserted_at" => _,
+               "updated_at" => _
              } = json_response(conn, 200)["data"]
     end
 
@@ -95,7 +97,9 @@ defmodule StacksWeb.ItemControllerTest do
                "item_type" => "some updated item_type",
                "metadata" => %{},
                "source_url" => "some updated source_url",
-               "text_content" => "some updated text_content"
+               "text_content" => "some updated text_content",
+               "inserted_at" => _,
+               "updated_at" => _
              } = json_response(conn, 200)["data"]
     end
 
