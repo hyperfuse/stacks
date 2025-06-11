@@ -27,8 +27,8 @@ defmodule StacksWeb.ArticleController do
 
         case Articles.create_article(article_params_with_item) do
           {:ok, article} ->
-            # Enqueue the enrichment job
-            Enricher.insert(%{"article_id" => article.id})
+            # Enqueue the enrichment job using the item_id
+            Enricher.insert(%{"item_id" => item.id})
 
             conn
             |> put_status(:created)
