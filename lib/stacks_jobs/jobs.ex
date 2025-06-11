@@ -1,68 +1,238 @@
-defmodule StacksJobs.Workers.ArticleEnricher do
+defmodule StacksJobs.Workers.Enricher do
   use Oban.Worker, queue: :default, max_attempts: 3
   alias Stacks.Articles
   alias Stacks.Items
   alias Stacks.Repo
   @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"article_id" => article_id}}) do
-    IO.puts("Processing article enrichment job for article ID #{article_id}")
+  def perform(%Oban.Job{args: %{"item_id" => item_id}}) do
+    IO.puts("Processing enrichment job for item ID #{item_id}")
 
-    # Get the article and its associated item
-    article = Articles.get_article!(article_id) |> Repo.preload(:item)
-    item = article.item
+    # Get the item
+    item = Items.get_item!(item_id)
 
     # Update item enrichment status to processing
     Items.update_item(item, %{"enrichment_status" => :processing})
 
     try do
-      # Extract content using Readability
-      summary = Readability.summarize(article.source_url)
+      # Check if URL is an article using heuristics
+      if is_article?(item.source_url) do
+        # Set item type to article
+        Items.update_item(item, %{"item_type" => "article"})
+        
+        # Extract content using Readability
+        summary = Readability.summarize(item.source_url)
 
-      # Extract main image from webpage
-      image_binary = extract_main_image(article.source_url)
+        # Extract main image from webpage
+        image_binary = extract_main_image(item.source_url)
 
-      # Extract source website and favicon
-      {source_website, favicon_url} = extract_website_info(article.source_url)
+        # Extract source website and favicon
+        {source_website, favicon_url} = extract_website_info(item.source_url)
 
-      # Update article with enriched content
-      Articles.update_article(article, %{
-        "title" => summary.title,
-        "html_content" => summary.article_html,
-        "text_content" => summary.article_text,
-        "image" => image_binary,
-        "metadata" => %{
-          "authors" => summary.authors,
-          "extracted_at" => DateTime.utc_now()
-        }
-      })
+        # Create article record
+        {:ok, _article} = Articles.create_article(%{
+          "item_id" => item.id,
+          "source_url" => item.source_url,
+          "title" => summary.title,
+          "html_content" => summary.article_html,
+          "text_content" => summary.article_text,
+          "image" => image_binary,
+          "metadata" => %{
+            "authors" => summary.authors,
+            "extracted_at" => DateTime.utc_now()
+          }
+        })
 
-      # Update item with website info and enrichment status
-      Items.update_item(item, %{
-        "source_website" => source_website,
-        "favicon_url" => favicon_url,
-        "enrichment_status" => :completed
-      })
+        # Update item with website info and enrichment status
+        Items.update_item(item, %{
+          "source_website" => source_website,
+          "favicon_url" => favicon_url,
+          "enrichment_status" => :completed
+        })
+      else
+        # Not an article, just extract basic website info
+        {source_website, favicon_url} = extract_website_info(item.source_url)
+        
+        Items.update_item(item, %{
+          "source_website" => source_website,
+          "favicon_url" => favicon_url,
+          "enrichment_status" => :completed
+        })
+      end
     rescue
       error ->
-        IO.puts("Error enriching article #{article_id}: #{inspect(error)}")
+        IO.puts("Error enriching item #{item_id}: #{inspect(error)}")
         Items.update_item(item, %{"enrichment_status" => :failed})
         {:error, error}
     end
   end
 
   # Support legacy format for backward compatibility
-  def perform(%Oban.Job{args: %{"id" => id}}) do
-    perform(%Oban.Job{args: %{"article_id" => id}})
+  def perform(%Oban.Job{args: %{"article_id" => article_id}}) do
+    # Get article and use its item_id
+    article = Articles.get_article!(article_id) |> Repo.preload(:item)
+    perform(%Oban.Job{args: %{"item_id" => article.item.id}})
   end
 
-  def insert(%{"article_id" => article_id}) do
-    StacksJobs.Workers.ArticleEnricher.new(%{"article_id" => article_id})
+  # Support legacy format for backward compatibility
+  def perform(%Oban.Job{args: %{"id" => id}}) do
+    perform(%Oban.Job{args: %{"item_id" => id}})
+  end
+
+  def insert(%{"item_id" => item_id}) do
+    StacksJobs.Workers.Enricher.new(%{"item_id" => item_id})
     |> Oban.insert()
   end
 
   # Support legacy format for backward compatibility
+  def insert(%{"article_id" => article_id}) do
+    # Get article and use its item_id
+    article = Articles.get_article!(article_id) |> Repo.preload(:item)
+    insert(%{"item_id" => article.item.id})
+  end
+
+  # Support legacy format for backward compatibility
   def insert(%{"id" => id}) do
-    insert(%{"article_id" => id})
+    insert(%{"item_id" => id})
+  end
+
+  # Heuristic function to determine if a URL likely contains an article
+  defp is_article?(url) do
+    try do
+      # Fetch the webpage HTML
+      case Finch.build(:get, url) |> Finch.request(Stacks.Finch) do
+        {:ok, %{status: 200, body: html}} ->
+          {:ok, document} = Floki.parse_document(html)
+          
+          # Check various indicators that suggest this is an article
+          has_article_indicators?(document, url)
+        
+        _ ->
+          # Default to treating as article if we can't fetch
+          true
+      end
+    rescue
+      _ ->
+        # Default to treating as article if there's an error
+        true
+    end
+  end
+
+  # Check for various indicators that suggest this is an article
+  defp has_article_indicators?(document, url) do
+    # Check URL patterns that suggest articles
+    url_suggests_article = url_suggests_article?(url)
+    
+    # Check for article-specific meta tags
+    has_article_meta = has_article_meta_tags?(document)
+    
+    # Check for structured content that suggests an article
+    has_article_structure = has_article_structure?(document)
+    
+    # Check content length (articles typically have substantial text)
+    has_sufficient_content = has_sufficient_content?(document)
+    
+    # Consider it an article if any strong indicators are present
+    url_suggests_article || has_article_meta || (has_article_structure && has_sufficient_content)
+  end
+
+  # Check if URL patterns suggest this is an article
+  defp url_suggests_article?(url) do
+    # Common patterns in article URLs
+    article_patterns = [
+      ~r/\/article[s]?\//i,
+      ~r/\/blog\//i,
+      ~r/\/post[s]?\//i,
+      ~r/\/news\//i,
+      ~r/\/story\//i,
+      ~r/\/\d{4}\/\d{2}\/\d{2}\//,  # Date pattern like /2023/12/01/
+      ~r/-\d{4}-\d{2}-\d{2}/,       # Date pattern like -2023-12-01
+      ~r/\/read\//i,
+      ~r/\/content\//i
+    ]
+    
+    # Exclude patterns that are unlikely to be articles
+    non_article_patterns = [
+      ~r/\/api\//i,
+      ~r/\/admin\//i,
+      ~r/\/login\//i,
+      ~r/\/signup\//i,
+      ~r/\/register\//i,
+      ~r/\/search\//i,
+      ~r/\/category\//i,
+      ~r/\/tag[s]?\//i,
+      ~r/\/user[s]?\//i,
+      ~r/\/profile[s]?\//i,
+      ~r/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar|exe|dmg)$/i
+    ]
+    
+    # Check if any non-article patterns match (exclude if they do)
+    if Enum.any?(non_article_patterns, &Regex.match?(&1, url)) do
+      false
+    else
+      # Check if any article patterns match
+      Enum.any?(article_patterns, &Regex.match?(&1, url))
+    end
+  end
+
+  # Check for article-specific meta tags
+  defp has_article_meta_tags?(document) do
+    # OpenGraph article type
+    og_type = Floki.find(document, "meta[property='og:type']")
+              |> Floki.attribute("content")
+              |> List.first()
+    
+    # Check for JSON-LD structured data indicating an article
+    json_ld_scripts = Floki.find(document, "script[type='application/ld+json']")
+    has_article_json_ld = Enum.any?(json_ld_scripts, fn script ->
+      script_content = Floki.text(script)
+      String.contains?(script_content, "Article") || 
+      String.contains?(script_content, "NewsArticle") ||
+      String.contains?(script_content, "BlogPosting")
+    end)
+    
+    # Check for article-specific meta tags
+    has_author = !Enum.empty?(Floki.find(document, "meta[name='author']")) ||
+                 !Enum.empty?(Floki.find(document, "meta[property='article:author']"))
+    
+    has_published_date = !Enum.empty?(Floki.find(document, "meta[property='article:published_time']")) ||
+                        !Enum.empty?(Floki.find(document, "meta[name='publish_date']")) ||
+                        !Enum.empty?(Floki.find(document, "time[datetime]"))
+    
+    og_type == "article" || has_article_json_ld || (has_author && has_published_date)
+  end
+
+  # Check for HTML structure that suggests an article
+  defp has_article_structure?(document) do
+    # Look for semantic HTML5 article elements
+    has_article_element = !Enum.empty?(Floki.find(document, "article"))
+    
+    # Look for common article container classes/IDs
+    article_selectors = [
+      "[class*='article']",
+      "[class*='post']", 
+      "[class*='content']",
+      "[class*='entry']",
+      "[id*='article']",
+      "[id*='post']",
+      "[id*='content']",
+      "[id*='entry']"
+    ]
+    
+    has_article_container = Enum.any?(article_selectors, fn selector ->
+      !Enum.empty?(Floki.find(document, selector))
+    end)
+    
+    has_article_element || has_article_container
+  end
+
+  # Check if the document has sufficient content to be an article
+  defp has_sufficient_content?(document) do
+    # Extract text content and check length
+    text_content = Floki.text(document)
+    text_length = String.length(String.trim(text_content))
+    
+    # Articles typically have at least 200 characters of content
+    text_length > 200
   end
 
   # Extract the main image from a webpage

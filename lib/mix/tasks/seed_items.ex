@@ -17,7 +17,6 @@ defmodule Mix.Tasks.SeedItems do
   use Mix.Task
 
   alias Stacks.Items
-  alias Stacks.Articles
 
   @shortdoc "Seeds items from a text file containing URLs"
 
@@ -64,11 +63,11 @@ defmodule Mix.Tasks.SeedItems do
   defp create_item_from_url(url, line_number) do
     case Items.create_or_get_item(%{
            source_url: url,
-           item_type: "article"
+           item_type: "unknown"  # Let the enricher determine the type
          }) do
       {:ok, item} ->
         Mix.shell().info("Line #{line_number}: Created item for #{url} (ID: #{item.id})")
-        create_article_and_queue_job(item, url, line_number)
+        queue_enrichment_job(item)
 
       {:existing, item} ->
         Mix.shell().info("Line #{line_number}: Item already exists for #{url} (ID: #{item.id})")
@@ -79,24 +78,9 @@ defmodule Mix.Tasks.SeedItems do
     end
   end
 
-  defp create_article_and_queue_job(item, url, line_number) do
-    case Articles.create_article(%{
-           source_url: url,
-           item_id: item.id
-         }) do
-      {:ok, article} ->
-        Mix.shell().info("Line #{line_number}: Created article for #{url} (ID: #{article.id})")
-        queue_enrichment_job(article)
-
-      {:error, changeset} ->
-        errors = Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} -> msg end)
-        Mix.shell().error("Line #{line_number}: Failed to create article for #{url}: #{inspect(errors)}")
-    end
-  end
-
-  defp queue_enrichment_job(article) do
-    %{article_id: article.id}
-    |> StacksJobs.Workers.ArticleEnricher.new()
+  defp queue_enrichment_job(item) do
+    %{item_id: item.id}
+    |> StacksJobs.Workers.Enricher.new()
     |> Oban.insert()
   end
 end
