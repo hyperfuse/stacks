@@ -10,6 +10,7 @@ defmodule Stacks.Videos.Video do
     field :source_url, :string
     field :duration, :integer
     field :thumbnail_url, :string
+    field :thumbnail, :binary
     field :description, :string
     field :video_id, :string
     field :platform, :string
@@ -30,6 +31,7 @@ defmodule Stacks.Videos.Video do
       :source_url,
       :duration,
       :thumbnail_url,
+      :thumbnail,
       :description,
       :video_id,
       :platform,
