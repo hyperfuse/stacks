@@ -19,6 +19,7 @@ defmodule Stacks.Items.Item do
 
     field :user_id, :string
     has_one :article, Stacks.Articles.Article
+    has_one :video, Stacks.Videos.Video
     timestamps(type: :utc_datetime)
   end
 

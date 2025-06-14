@@ -1,9 +1,11 @@
 defmodule StacksJobs.Workers.Enricher do
   use Oban.Worker, queue: :default, max_attempts: 3
   alias Stacks.Articles
+  alias Stacks.Videos
   alias Stacks.Items
   alias Stacks.Categorizer
   alias Stacks.Categorizers.ArticleCategorizer
+  alias Stacks.Categorizers.VideoCategorizer
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"item_id" => item_id}}) do
     IO.puts("Processing enrichment job for item ID #{item_id}")
@@ -16,9 +18,34 @@ defmodule StacksJobs.Workers.Enricher do
 
     try do
       # Categorize the item using configured categorizers
-      categorizers = [ArticleCategorizer]
+      categorizers = [VideoCategorizer, ArticleCategorizer]
 
       case categorize_item(item.source_url, categorizers) do
+        {:ok, {:video, metadata}} ->
+          # Set item type to video
+          Items.update_item(item, %{"item_type" => "video"})
+
+          # Create video record using all metadata from categorizer
+          {:ok, _video} =
+            Videos.create_video(%{
+              "item_id" => item.id,
+              "source_url" => item.source_url,
+              "title" => metadata["title"],
+              "description" => metadata["description"],
+              "duration" => metadata["duration"],
+              "thumbnail_url" => metadata["thumbnail_url"],
+              "video_id" => metadata["video_id"],
+              "platform" => metadata["platform"],
+              "metadata" => Map.take(metadata, ["detected_by", "extracted_at"])
+            })
+
+          # Update item with website info and enrichment status
+          Items.update_item(item, %{
+            "source_website" => metadata["source_website"],
+            "favicon_url" => metadata["favicon_url"],
+            "enrichment_status" => :completed
+          })
+
         {:ok, {:article, metadata}} ->
           # Set item type to article
           Items.update_item(item, %{"item_type" => "article"})
