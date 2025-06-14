@@ -40,6 +40,38 @@ defmodule Stacks.Items do
   end
 
   @doc """
+  Returns the list of items with their associated videos preloaded.
+
+  ## Examples
+
+      iex> list_items_with_videos()
+      [%Item{video: %Video{} | nil}, ...]
+
+  """
+  def list_items_with_videos do
+    Item
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
+    |> Repo.preload(:video)
+  end
+
+  @doc """
+  Returns the list of items with all associations preloaded.
+
+  ## Examples
+
+      iex> list_items_with_associations()
+      [%Item{article: %Article{} | nil, video: %Video{} | nil}, ...]
+
+  """
+  def list_items_with_associations do
+    Item
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:article, :video])
+  end
+
+  @doc """
   Gets a single item.
 
   Raises `Ecto.NoResultsError` if the Item does not exist.
@@ -73,6 +105,46 @@ defmodule Stacks.Items do
     Item
     |> Repo.get!(id)
     |> Repo.preload(:article)
+  end
+
+  @doc """
+  Gets a single item with its associated video preloaded.
+
+  Raises `Ecto.NoResultsError` if the Item does not exist.
+
+  ## Examples
+
+      iex> get_item_with_video!(123)
+      %Item{video: %Video{}}
+
+      iex> get_item_with_video!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_item_with_video!(id) do
+    Item
+    |> Repo.get!(id)
+    |> Repo.preload(:video)
+  end
+
+  @doc """
+  Gets a single item with all associations preloaded.
+
+  Raises `Ecto.NoResultsError` if the Item does not exist.
+
+  ## Examples
+
+      iex> get_item_with_associations!(123)
+      %Item{article: %Article{} | nil, video: %Video{} | nil}
+
+      iex> get_item_with_associations!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_item_with_associations!(id) do
+    Item
+    |> Repo.get!(id)
+    |> Repo.preload([:article, :video])
   end
 
   @doc """

@@ -24,7 +24,220 @@
   
 <!-- Two Column Layout -->
   <div class="relative">
-    <%= if @item.item_type == "article" && @item.article do %>
+    <%= if @item.item_type == "video" && @item.video do %>
+      <!-- Video Content Area with Sidebar -->
+      <div class="flex">
+        <!-- Video Content -->
+        <div class="flex-1 lg:pr-80">
+          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Mobile Sidebar Toggle -->
+            <button
+              class="lg:hidden fixed top-20 right-4 z-50 bg-white border border-gray-300 rounded-md p-2 shadow-sm"
+              onclick="toggleSidebar()"
+            >
+              <svg
+                class="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+            
+            <!-- Video Header -->
+            <div class="mb-6">
+              <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+                <%= if @item.favicon_url do %>
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
+                <% end %>
+                <span class="uppercase tracking-wide font-medium text-red-600">
+                  {@item.source_website || @item.video.platform || "Video"}
+                </span>
+              </div>
+
+              <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-4">
+                {@item.video.title || "Untitled Video"}
+              </h1>
+
+              <div class="flex items-center space-x-4 text-sm text-gray-600 mb-6">
+                <%= if @item.video.platform do %>
+                  <span>Platform: {String.capitalize(@item.video.platform)}</span>
+                <% end %>
+                <%= if @item.video.duration do %>
+                  <span>• Duration: {format_duration(@item.video.duration)}</span>
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- Video Player -->
+            <div class="mb-8">
+              <div class="aspect-video bg-black rounded-lg overflow-hidden">
+                <%= cond do %>
+                  <% @item.video.platform == "youtube" && @item.video.video_id -> %>
+                    <iframe
+                      src={"https://www.youtube.com/embed/#{@item.video.video_id}"}
+                      title={@item.video.title || "Video"}
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen
+                      class="w-full h-full"
+                    ></iframe>
+                  <% @item.video.platform == "vimeo" && @item.video.video_id -> %>
+                    <iframe
+                      src={"https://player.vimeo.com/video/#{@item.video.video_id}"}
+                      title={@item.video.title || "Video"}
+                      frameborder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowfullscreen
+                      class="w-full h-full"
+                    ></iframe>
+                  <% true -> %>
+                    <!-- Fallback: Link to original video -->
+                    <div class="w-full h-full flex items-center justify-center bg-gray-900">
+                      <div class="text-center text-white">
+                        <%= if @item.video.thumbnail_url do %>
+                          <img
+                            src={@item.video.thumbnail_url}
+                            alt="Video thumbnail"
+                            class="max-w-full max-h-full mx-auto mb-4"
+                          />
+                        <% end %>
+                        <div class="mb-4">
+                          <svg class="w-16 h-16 mx-auto text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                        <p class="text-lg mb-4">Video player not available for this platform</p>
+                        <a
+                          href={@item.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors duration-200"
+                        >
+                          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                          Watch on {@item.video.platform || "original site"}
+                        </a>
+                      </div>
+                    </div>
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- Video Description -->
+            <%= if @item.video.description do %>
+              <div class="prose prose-lg prose-gray max-w-none">
+                <div class="bg-gray-50 rounded-lg p-6">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-3">Description</h3>
+                  <p class="text-gray-700 whitespace-pre-wrap">{@item.video.description}</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <!-- Video Sidebar -->
+        <div
+          id="sidebar"
+          class="fixed top-14 right-0 w-80 h-screen bg-white border-l border-gray-200 overflow-y-auto z-40 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out hidden lg:block"
+        >
+          <div class="w-full p-6">
+            <!-- Video Title in Sidebar -->
+            <div class="mb-6">
+              <h2 class="text-lg font-semibold text-gray-900 mb-2">
+                {@item.video.title || "Untitled Video"}
+              </h2>
+              <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <%= if @item.favicon_url do %>
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
+                <% end %>
+                <span>
+                  {@item.source_website || @item.video.platform || "unknown"}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Video Metadata Section -->
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-900 mb-3">VIDEO INFO</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Type</span>
+                  <span class="text-gray-900">Video</span>
+                </div>
+
+                <%= if @item.video.platform do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Platform</span>
+                    <span class="text-gray-900">{String.capitalize(@item.video.platform)}</span>
+                  </div>
+                <% end %>
+
+                <%= if @item.video.duration do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Duration</span>
+                    <span class="text-gray-900">{format_duration(@item.video.duration)}</span>
+                  </div>
+                <% end %>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Saved</span>
+                  <span class="text-gray-900">
+                    {Calendar.strftime(@item.inserted_at, "%b %d, %Y")}
+                  </span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Progress</span>
+                  <span class="text-gray-900">0% (unwatched)</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- View Original Link -->
+            <a
+              href={@item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center text-red-600 hover:text-red-800 text-sm"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              Watch on {@item.video.platform || "original site"}
+            </a>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <%= if @item.item_type == "article" && @item.article do %>
       <!-- Main Content Area with Sidebar -->
       <div class="flex">
         <!-- Article Content -->
@@ -314,24 +527,25 @@
           </div>
         </div>
       </div>
-    <% else %>
-      <!-- Non-article items -->
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="text-center py-12">
-          <h1 class="text-2xl font-bold text-gray-900 mb-4">Item Details</h1>
-          <p class="text-gray-600">This item type is not yet supported for detailed viewing.</p>
-          <div class="mt-8">
-            <a
-              href={@item.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-blue-600 hover:text-blue-800 underline"
-            >
-              View original source
-            </a>
+      <% else %>
+        <!-- Non-article and non-video items -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div class="text-center py-12">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">Item Details</h1>
+            <p class="text-gray-600">This item type is not yet supported for detailed viewing.</p>
+            <div class="mt-8">
+              <a
+                href={@item.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 hover:text-blue-800 underline"
+              >
+                View original source
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </div>
