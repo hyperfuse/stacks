@@ -293,5 +293,20 @@
         sidebar.classList.toggle('collapsed');
       });
     }
+
+    // Auto-collapse sidebar on window resize
+    function handleResize() {
+      if (sidebar && window.innerWidth < 1024) {
+        sidebar.classList.add('collapsed');
+      } else if (sidebar && window.innerWidth >= 1024) {
+        sidebar.classList.remove('collapsed');
+      }
+    }
+
+    // Check on page load
+    handleResize();
+
+    // Listen for window resize events
+    window.addEventListener('resize', handleResize);
   });
 </script>
