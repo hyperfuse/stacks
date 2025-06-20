@@ -123,9 +123,15 @@
                       </h3>
                       
                       <%= if item.article.metadata && item.article.metadata["description"] do %>
-                        <p class="text-slate-600 mt-2 line-clamp-2 text-sm">
+                        <p class="text-slate-600 mt-2 line-clamp-3 text-sm leading-relaxed">
                           <%= item.article.metadata["description"] %>
                         </p>
+                      <% else %>
+                        <%= if item.article.text_content do %>
+                          <p class="text-slate-600 mt-2 line-clamp-3 text-sm leading-relaxed">
+                            <%= String.slice(item.article.text_content, 0, 200) %>...
+                          </p>
+                        <% end %>
                       <% end %>
 
                       <div class="flex items-center space-x-4 mt-3 text-sm text-slate-500">
@@ -198,6 +204,12 @@
                         <h3 class="text-lg font-semibold text-slate-900 group-hover:text-red-600 transition-colors line-clamp-2">
                           <%= item.video.title || "Untitled Video" %>
                         </h3>
+
+                        <%= if item.video.description do %>
+                          <p class="text-slate-600 mt-2 line-clamp-3 text-sm leading-relaxed">
+                            <%= item.video.description %>
+                          </p>
+                        <% end %>
 
                         <div class="flex items-center space-x-4 mt-3 text-sm text-slate-500">
                           <%= if item.video.platform do %>
@@ -278,6 +290,13 @@
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
