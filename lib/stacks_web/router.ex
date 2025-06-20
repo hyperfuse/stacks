@@ -23,6 +23,8 @@ defmodule StacksWeb.Router do
   scope "/", StacksWeb do
     pipe_through :browser
     get "/", PageController, :home
+    get "/articles", PageController, :articles
+    get "/videos", PageController, :videos
     get "/items/:id", PageController, :item
   end
 
