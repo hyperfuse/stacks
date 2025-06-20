@@ -117,24 +117,24 @@
                     </div>
 
                     <!-- Article Content -->
-                    <div class="flex-1 min-w-0">
-                      <h3 class="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                    <div class="flex-1 min-w-0 h-20 flex flex-col justify-between">
+                      <h3 class="text-base font-semibold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
                         <%= item.article.title || "Untitled Article" %>
                       </h3>
                       
                       <%= if item.article.metadata && item.article.metadata["description"] do %>
-                        <p class="text-slate-600 mt-2 line-clamp-3 text-sm leading-relaxed">
+                        <p class="text-slate-600 line-clamp-2 text-sm leading-tight">
                           <%= item.article.metadata["description"] %>
                         </p>
                       <% else %>
                         <%= if item.article.text_content do %>
-                          <p class="text-slate-600 mt-2 line-clamp-3 text-sm leading-relaxed">
-                            <%= String.slice(item.article.text_content, 0, 200) %>...
+                          <p class="text-slate-600 line-clamp-2 text-sm leading-tight">
+                            <%= String.slice(item.article.text_content, 0, 150) %>...
                           </p>
                         <% end %>
                       <% end %>
 
-                      <div class="flex items-center space-x-4 mt-3 text-sm text-slate-500">
+                      <div class="flex items-center space-x-4 text-xs text-slate-500">
                         <%= if item.article.metadata && item.article.metadata["domain"] do %>
                           <span class="flex items-center space-x-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,18 +200,18 @@
                       </div>
 
                       <!-- Video Content -->
-                      <div class="flex-1 min-w-0">
-                        <h3 class="text-lg font-semibold text-slate-900 group-hover:text-red-600 transition-colors line-clamp-2">
+                      <div class="flex-1 min-w-0 h-20 flex flex-col justify-between">
+                        <h3 class="text-base font-semibold text-slate-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-tight">
                           <%= item.video.title || "Untitled Video" %>
                         </h3>
 
                         <%= if item.video.description do %>
-                          <p class="text-slate-600 mt-2 line-clamp-3 text-sm leading-relaxed">
+                          <p class="text-slate-600 line-clamp-2 text-sm leading-tight">
                             <%= item.video.description %>
                           </p>
                         <% end %>
 
-                        <div class="flex items-center space-x-4 mt-3 text-sm text-slate-500">
+                        <div class="flex items-center space-x-4 text-xs text-slate-500">
                           <%= if item.video.platform do %>
                             <span class="flex items-center space-x-1">
                               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
