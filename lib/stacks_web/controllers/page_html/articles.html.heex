@@ -107,14 +107,25 @@
                     <% end %>
 
                     <div class="flex items-center space-x-4 text-xs text-slate-500">
-                      <%= if item.article.metadata && item.article.metadata["domain"] do %>
-                        <span class="flex items-center space-x-1">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <span class="flex items-center space-x-2">
+                        <%= if item.favicon_url do %>
+                          <img src={item.favicon_url} alt="Favicon" class="w-4 h-4 rounded-sm flex-shrink-0" />
+                        <% else %>
+                          <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m0 0l4-4a4 4 0 105.656-5.656l-1.102 1.102m-2.172 2.172l-4 4"/>
                           </svg>
-                          <span><%= item.article.metadata["domain"] %></span>
+                        <% end %>
+                        <span>
+                          <%= cond do %>
+                            <% item.source_website -> %>
+                              <%= item.source_website %>
+                            <% item.article.metadata && item.article.metadata["domain"] -> %>
+                              <%= item.article.metadata["domain"] %>
+                            <% true -> %>
+                              <%= URI.parse(item.source_url).host || "Unknown" %>
+                          <% end %>
                         </span>
-                      <% end %>
+                      </span>
                       
                       <%= if item.inserted_at do %>
                         <span class="flex items-center space-x-1">
