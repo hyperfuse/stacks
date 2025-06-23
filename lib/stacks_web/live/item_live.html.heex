@@ -52,17 +52,7 @@
             </button>
             
             <!-- Item Actions Menu -->
-            <div class="flex justify-between items-center mb-6">
-              <%= if @item.archived do %>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
-                  </svg>
-                  Archived
-                </span>
-              <% else %>
-                <div></div>
-              <% end %>
+            <div class="flex justify-end items-center mb-6">
               <div class="relative inline-block">
                 <div class="flex items-center bg-gray-200 text-gray-700 rounded-full px-2 py-1 space-x-1 shadow-sm">
                   <!-- Archive/Unarchive Button -->
@@ -324,17 +314,7 @@
             </button>
             
             <!-- Item Actions Menu -->
-            <div class="flex justify-between items-center mb-6">
-              <%= if @item.archived do %>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
-                  </svg>
-                  Archived
-                </span>
-              <% else %>
-                <div></div>
-              <% end %>
+            <div class="flex justify-end items-center mb-6">
               <div class="relative inline-block">
                 <div class="flex items-center bg-gray-200 text-gray-700 rounded-full px-2 py-1 space-x-1 shadow-sm">
                   <!-- Archive/Unarchive Button -->
