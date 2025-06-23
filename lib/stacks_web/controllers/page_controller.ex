@@ -31,7 +31,7 @@ defmodule StacksWeb.PageController do
 
   def archives(conn, _params) do
     items = Items.list_archived_items_with_associations()
-    render(conn, :archives, items: items)
+    render(conn, :archives, items: items, current_path: conn.request_path)
   end
 
   def item(conn, %{"id" => id}) do
