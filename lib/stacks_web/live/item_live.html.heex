@@ -19,36 +19,6 @@
           <h1 class="text-lg font-medium text-gray-900">Stacks</h1>
         </div>
         
-        <!-- Archive Status and Button -->
-        <div class="flex items-center space-x-3">
-          <%= if @item.archived do %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
-              </svg>
-              Archived
-            </span>
-            <button
-              phx-click="unarchive"
-              class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-              </svg>
-              Unarchive
-            </button>
-          <% else %>
-            <button
-              phx-click="archive"
-              class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
-              </svg>
-              Archive
-            </button>
-          <% end %>
-        </div>
       </div>
     </div>
   </header>
@@ -81,6 +51,58 @@
               </svg>
             </button>
             
+            <!-- Item Actions Menu -->
+            <div class="flex justify-between items-center mb-6">
+              <%= if @item.archived do %>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
+                  </svg>
+                  Archived
+                </span>
+              <% else %>
+                <div></div>
+              <% end %>
+              <div class="relative inline-block">
+                <div class="flex items-center bg-gray-200 text-gray-700 rounded-full px-2 py-1 space-x-1 shadow-sm">
+                  <!-- Archive/Unarchive Button -->
+                  <%= if @item.archived do %>
+                    <button
+                      phx-click="unarchive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Unarchive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                      </svg>
+                    </button>
+                  <% else %>
+                    <button
+                      phx-click="archive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Archive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
+                      </svg>
+                    </button>
+                  <% end %>
+                  
+                  <!-- Delete Button -->
+                  <button
+                    phx-click="delete"
+                    data-confirm="Are you sure you want to delete this item? This action cannot be undone."
+                    class="flex items-center justify-center w-5 h-5 hover:bg-red-200 rounded-full transition-colors duration-200"
+                    title="Delete"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Video Header -->
             <div class="mb-6">
               <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
@@ -301,6 +323,58 @@
               </svg>
             </button>
             
+            <!-- Item Actions Menu -->
+            <div class="flex justify-between items-center mb-6">
+              <%= if @item.archived do %>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
+                  </svg>
+                  Archived
+                </span>
+              <% else %>
+                <div></div>
+              <% end %>
+              <div class="relative inline-block">
+                <div class="flex items-center bg-gray-200 text-gray-700 rounded-full px-2 py-1 space-x-1 shadow-sm">
+                  <!-- Archive/Unarchive Button -->
+                  <%= if @item.archived do %>
+                    <button
+                      phx-click="unarchive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Unarchive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                      </svg>
+                    </button>
+                  <% else %>
+                    <button
+                      phx-click="archive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Archive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
+                      </svg>
+                    </button>
+                  <% end %>
+                  
+                  <!-- Delete Button -->
+                  <button
+                    phx-click="delete"
+                    data-confirm="Are you sure you want to delete this item? This action cannot be undone."
+                    class="flex items-center justify-center w-5 h-5 hover:bg-red-200 rounded-full transition-colors duration-200"
+                    title="Delete"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
 <!-- Article Header -->
             <div class="mb-8">
               <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
