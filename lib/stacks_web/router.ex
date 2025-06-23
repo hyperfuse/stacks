@@ -25,6 +25,7 @@ defmodule StacksWeb.Router do
     get "/", PageController, :home
     get "/articles", PageController, :articles
     get "/videos", PageController, :videos
+    get "/archives", PageController, :archives
     live "/items/:id", ItemLive
   end
 

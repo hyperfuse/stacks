@@ -4,7 +4,7 @@ defmodule StacksWeb.PageController do
   alias Stacks.Items
 
   def home(conn, _params) do
-    items = Items.list_items_with_associations()
+    items = Items.list_inbox_items_with_associations()
     render(conn, :home, items: items)
   end
 
@@ -18,6 +18,11 @@ defmodule StacksWeb.PageController do
     videos = Items.list_items_with_associations()
     |> Enum.filter(&(&1.item_type == "video" && &1.video))
     render(conn, :videos, items: videos)
+  end
+
+  def archives(conn, _params) do
+    items = Items.list_archived_items_with_associations()
+    render(conn, :archives, items: items)
   end
 
   def item(conn, %{"id" => id}) do

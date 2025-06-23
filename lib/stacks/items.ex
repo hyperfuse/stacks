@@ -72,6 +72,40 @@ defmodule Stacks.Items do
   end
 
   @doc """
+  Returns a list of non-archived items with all associations preloaded.
+
+  ## Examples
+
+      iex> list_inbox_items_with_associations()
+      [%Item{archived: false}, ...]
+
+  """
+  def list_inbox_items_with_associations do
+    Item
+    |> where([i], i.archived == false)
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:article, :video])
+  end
+
+  @doc """
+  Returns a list of archived items with all associations preloaded.
+
+  ## Examples
+
+      iex> list_archived_items_with_associations()
+      [%Item{archived: true}, ...]
+
+  """
+  def list_archived_items_with_associations do
+    Item
+    |> where([i], i.archived == true)
+    |> order_by(desc: :inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:article, :video])
+  end
+
+  @doc """
   Gets a single item.
 
   Raises `Ecto.NoResultsError` if the Item does not exist.
