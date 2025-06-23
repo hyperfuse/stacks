@@ -112,7 +112,7 @@
                     <span>{String.capitalize(item.video.platform)}</span>
                   <% end %>
                   <%= if item.video.duration do %>
-                    <span>{PageHTML.format_duration(item.video.duration)}</span>
+                    <span>{StacksWeb.PageHTML.format_duration(item.video.duration)}</span>
                   <% end %>
                 </div>
               </div>
