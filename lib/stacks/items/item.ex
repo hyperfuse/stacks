@@ -17,6 +17,7 @@ defmodule Stacks.Items.Item do
       values: [:pending, :processing, :completed, :failed],
       default: :pending
 
+    field :archived, :boolean, default: false
     field :user_id, :string
     has_one :article, Stacks.Articles.Article
     has_one :video, Stacks.Videos.Video
@@ -36,7 +37,8 @@ defmodule Stacks.Items.Item do
       :favicon_url,
       :text_content,
       :metadata,
-      :enrichment_status
+      :enrichment_status,
+      :archived
     ])
     |> validate_required([:item_type, :source_url])
     |> validate_inclusion(:enrichment_status, [:pending, :processing, :completed, :failed])

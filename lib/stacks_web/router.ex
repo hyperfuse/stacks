@@ -25,14 +25,17 @@ defmodule StacksWeb.Router do
     get "/", PageController, :home
     get "/articles", PageController, :articles
     get "/videos", PageController, :videos
-    get "/items/:id", PageController, :item
+    live "/items/:id", ItemLive
   end
 
   scope "/api", StacksWeb do
     pipe_through :api
     resources "/articles", ArticleController, except: [:edit]
     resources "/videos", VideoController, except: [:edit]
-    resources "/items", ItemController, except: [:edit]
+    resources "/items", ItemController, except: [:edit] do
+      post "/archive", ItemController, :archive
+      post "/unarchive", ItemController, :unarchive
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
