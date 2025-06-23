@@ -56,4 +56,20 @@ defmodule StacksWeb.ItemController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def archive(conn, %{"id" => id}) do
+    item = Items.get_item!(id)
+
+    with {:ok, %Item{} = item} <- Items.archive_item(item) do
+      render(conn, :show, item: item)
+    end
+  end
+
+  def unarchive(conn, %{"id" => id}) do
+    item = Items.get_item!(id)
+
+    with {:ok, %Item{} = item} <- Items.unarchive_item(item) do
+      render(conn, :show, item: item)
+    end
+  end
 end

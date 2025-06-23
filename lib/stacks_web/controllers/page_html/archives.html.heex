@@ -1,11 +1,11 @@
-<.library_layout current_path={@current_path} page_title="Library" item_count={length(@items)} flash={@flash}>
+<.library_layout current_path={@current_path} page_title="Archives" item_count={length(@items)} flash={@flash}>
   <%= if @items == [] do %>
     <div class="flex flex-col items-center justify-center h-64 text-center">
       <svg class="w-16 h-16 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z"/>
       </svg>
-      <h3 class="text-lg font-medium text-slate-900 mb-2">Your inbox is empty</h3>
-      <p class="text-slate-500">New items you save will appear here.</p>
+      <h3 class="text-lg font-medium text-slate-900 mb-2">No archived items</h3>
+      <p class="text-slate-500">Items you archive will appear here.</p>
     </div>
   <% else %>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -36,6 +36,9 @@
                 <% end %>
                 <span class="text-xs text-slate-500 uppercase tracking-wide font-medium">
                   {item.source_website || item.article.metadata["domain"] || "Article"}
+                </span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                  Archived
                 </span>
               </div>
               
@@ -94,6 +97,9 @@
                   <% end %>
                   <span class="text-xs text-red-600 uppercase tracking-wide font-medium">
                     {item.source_website || item.video.platform || "Video"}
+                  </span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                    Archived
                   </span>
                 </div>
                 

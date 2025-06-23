@@ -1,0 +1,689 @@
+<.flash_group flash={@flash} />
+<div class="min-h-screen bg-white">
+  <!-- Simplified Header -->
+  <header class="border-b border-gray-200 sticky top-0 z-50 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+        <div class="flex items-center space-x-4">
+          <a href="/" class="inline-flex items-center text-gray-500 hover:text-gray-700 text-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back
+          </a>
+          <h1 class="text-lg font-medium text-gray-900">Stacks</h1>
+        </div>
+        
+      </div>
+    </div>
+  </header>
+  
+<!-- Two Column Layout -->
+  <div class="relative">
+    <%= if @item.item_type == "video" && @item.video do %>
+      <!-- Video Content Area with Sidebar -->
+      <div class="flex">
+        <!-- Video Content -->
+        <div class="flex-1 lg:pr-80">
+          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Mobile Sidebar Toggle -->
+            <button
+              class="lg:hidden fixed top-20 right-4 z-50 bg-white border border-gray-300 rounded-md p-2 shadow-sm"
+              onclick="toggleSidebar()"
+            >
+              <svg
+                class="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+            
+            <!-- Item Actions Menu -->
+            <div class="flex justify-end items-center mb-6">
+              <div class="relative inline-block">
+                <div class="flex items-center bg-gray-200 text-gray-700 rounded-full px-2 py-1 space-x-1 shadow-sm">
+                  <!-- Archive/Unarchive Button -->
+                  <%= if @item.archived do %>
+                    <button
+                      phx-click="unarchive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Unarchive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                      </svg>
+                    </button>
+                  <% else %>
+                    <button
+                      phx-click="archive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Archive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
+                      </svg>
+                    </button>
+                  <% end %>
+                  
+                  <!-- Delete Button -->
+                  <button
+                    phx-click="delete"
+                    data-confirm="Are you sure you want to delete this item? This action cannot be undone."
+                    class="flex items-center justify-center w-5 h-5 hover:bg-red-200 rounded-full transition-colors duration-200"
+                    title="Delete"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video Header -->
+            <div class="mb-6">
+              <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+                <%= if @item.favicon_url do %>
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
+                <% end %>
+                <span class="uppercase tracking-wide font-medium text-red-600">
+                  {@item.source_website || @item.video.platform || "Video"}
+                </span>
+              </div>
+
+              <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-4">
+                {@item.video.title || "Untitled Video"}
+              </h1>
+
+              <div class="flex items-center space-x-4 text-sm text-gray-600 mb-6">
+                <%= if @item.video.platform do %>
+                  <span>Platform: {String.capitalize(@item.video.platform)}</span>
+                <% end %>
+                <%= if @item.video.duration do %>
+                  <span>• Duration: {format_duration(@item.video.duration)}</span>
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- Video Player -->
+            <div class="mb-8">
+              <div class="aspect-video bg-black rounded-lg overflow-hidden">
+                <%= cond do %>
+                  <% @item.video.platform == "youtube" && @item.video.video_id -> %>
+                    <iframe
+                      src={"https://www.youtube.com/embed/#{@item.video.video_id}"}
+                      title={@item.video.title || "Video"}
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen
+                      class="w-full h-full"
+                    ></iframe>
+                  <% @item.video.platform == "vimeo" && @item.video.video_id -> %>
+                    <iframe
+                      src={"https://player.vimeo.com/video/#{@item.video.video_id}"}
+                      title={@item.video.title || "Video"}
+                      frameborder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowfullscreen
+                      class="w-full h-full"
+                    ></iframe>
+                  <% true -> %>
+                    <!-- Fallback: Link to original video -->
+                    <div class="w-full h-full flex items-center justify-center bg-gray-900">
+                      <div class="text-center text-white">
+                        <%= if @item.video.thumbnail_url do %>
+                          <img
+                            src={@item.video.thumbnail_url}
+                            alt="Video thumbnail"
+                            class="max-w-full max-h-full mx-auto mb-4"
+                          />
+                        <% end %>
+                        <div class="mb-4">
+                          <svg class="w-16 h-16 mx-auto text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                        <p class="text-lg mb-4">Video player not available for this platform</p>
+                        <a
+                          href={@item.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors duration-200"
+                        >
+                          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                          Watch on {@item.video.platform || "original site"}
+                        </a>
+                      </div>
+                    </div>
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- Video Description -->
+            <%= if @item.video.description do %>
+              <div class="prose prose-lg prose-gray max-w-none">
+                <div class="bg-gray-50 rounded-lg p-6">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-3">Description</h3>
+                  <p class="text-gray-700 whitespace-pre-wrap">{@item.video.description}</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <!-- Video Sidebar -->
+        <div
+          id="sidebar"
+          class="fixed top-14 right-0 w-80 h-screen bg-white border-l border-gray-200 overflow-y-auto z-40 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out hidden lg:block"
+        >
+          <div class="w-full p-6">
+            <!-- Video Title in Sidebar -->
+            <div class="mb-6">
+              <h2 class="text-lg font-semibold text-gray-900 mb-2">
+                {@item.video.title || "Untitled Video"}
+              </h2>
+              <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <%= if @item.favicon_url do %>
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
+                <% end %>
+                <span>
+                  {@item.source_website || @item.video.platform || "unknown"}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Video Metadata Section -->
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-900 mb-3">VIDEO INFO</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Type</span>
+                  <span class="text-gray-900">Video</span>
+                </div>
+
+                <%= if @item.video.platform do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Platform</span>
+                    <span class="text-gray-900">{String.capitalize(@item.video.platform)}</span>
+                  </div>
+                <% end %>
+
+                <%= if @item.video.duration do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Duration</span>
+                    <span class="text-gray-900">{format_duration(@item.video.duration)}</span>
+                  </div>
+                <% end %>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Saved</span>
+                  <span class="text-gray-900">
+                    {Calendar.strftime(@item.inserted_at, "%b %d, %Y")}
+                  </span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Status</span>
+                  <span class={if @item.archived, do: "text-gray-500", else: "text-green-600"}>
+                    {if @item.archived, do: "Archived", else: "Active"}
+                  </span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Progress</span>
+                  <span class="text-gray-900">0% (unwatched)</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- View Original Link -->
+            <a
+              href={@item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center text-red-600 hover:text-red-800 text-sm"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              Watch on {@item.video.platform || "original site"}
+            </a>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <%= if @item.item_type == "article" && @item.article do %>
+      <!-- Main Content Area with Sidebar -->
+      <div class="flex">
+        <!-- Article Content -->
+        <div class="flex-1 lg:pr-80">
+          <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Mobile Sidebar Toggle -->
+            <button
+              class="lg:hidden fixed top-20 right-4 z-50 bg-white border border-gray-300 rounded-md p-2 shadow-sm"
+              onclick="toggleSidebar()"
+            >
+              <svg
+                class="w-5 h-5 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+            
+            <!-- Item Actions Menu -->
+            <div class="flex justify-end items-center mb-6">
+              <div class="relative inline-block">
+                <div class="flex items-center bg-gray-200 text-gray-700 rounded-full px-2 py-1 space-x-1 shadow-sm">
+                  <!-- Archive/Unarchive Button -->
+                  <%= if @item.archived do %>
+                    <button
+                      phx-click="unarchive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Unarchive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                      </svg>
+                    </button>
+                  <% else %>
+                    <button
+                      phx-click="archive"
+                      class="flex items-center justify-center w-5 h-5 hover:bg-gray-300 rounded-full transition-colors duration-200"
+                      title="Archive"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z" />
+                      </svg>
+                    </button>
+                  <% end %>
+                  
+                  <!-- Delete Button -->
+                  <button
+                    phx-click="delete"
+                    data-confirm="Are you sure you want to delete this item? This action cannot be undone."
+                    class="flex items-center justify-center w-5 h-5 hover:bg-red-200 rounded-full transition-colors duration-200"
+                    title="Delete"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+<!-- Article Header -->
+            <div class="mb-8">
+              <div class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+                <%= if @item.favicon_url do %>
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
+                <% end %>
+                <span class="uppercase tracking-wide font-medium">
+                  {@item.source_website || @item.article.metadata["domain"] || "Unknown Source"}
+                </span>
+                <%= if @item.article.metadata["listen"] do %>
+                  <button class="flex items-center space-x-1 text-blue-600 hover:text-blue-800">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <span>Listen</span>
+                  </button>
+                <% end %>
+              </div>
+
+              <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-6">
+                {@item.article.title || "Untitled Article"}
+              </h1>
+
+              <div class="flex items-center space-x-4 text-sm text-gray-600 mb-8">
+                <%= if @item.article.metadata["author"] do %>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span class="text-xs font-medium text-gray-600">
+                        {String.first(@item.article.metadata["author"])}
+                      </span>
+                    </div>
+                    <span>{@item.article.metadata["author"]}</span>
+                  </div>
+                <% end %>
+                <%= if @item.article.metadata["published_date"] do %>
+                  <span>• {@item.article.metadata["published_date"]}</span>
+                <% end %>
+                <%= if @item.article.metadata["read_time"] do %>
+                  <span>• {@item.article.metadata["read_time"]}</span>
+                <% end %>
+              </div>
+            </div>
+            
+<!-- Article Image -->
+            <%= if @item.article.image do %>
+              <div class="mb-8">
+                <img
+                  src={"data:image/jpeg;base64,#{Base.encode64(@item.article.image)}"}
+                  alt={@item.article.title || "Article image"}
+                  class="w-full h-auto rounded-lg shadow-sm"
+                />
+              </div>
+            <% end %>
+            
+<!-- Article Content -->
+            <article class="prose prose-lg prose-gray max-w-none">
+              <%= if @item.article.html_content do %>
+                <div class="article-content">
+                  {raw(@item.article.html_content)}
+                </div>
+              <% else %>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                  <svg
+                    class="w-8 h-8 text-yellow-400 mx-auto mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p class="text-yellow-800 font-medium mb-2">Content is being processed...</p>
+                  <p class="text-yellow-700 text-sm mb-4">
+                    We're extracting the full article content for you.
+                  </p>
+                  <a
+                    href={@item.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-md transition-colors duration-200"
+                  >
+                    <svg
+                      class="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                    Read original article
+                  </a>
+                </div>
+              <% end %>
+            </article>
+          </div>
+        </div>
+        
+<!-- Sticky Sidebar -->
+        <div
+          id="sidebar"
+          class="fixed top-14 right-0 w-80 h-screen bg-white border-l border-gray-200 overflow-y-auto z-40 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out hidden lg:block"
+        >
+          <div class="w-full p-6">
+            <!-- Article Title in Sidebar -->
+            <div class="mb-6">
+              <h2 class="text-lg font-semibold text-gray-900 mb-2">
+                {@item.article.title || "Untitled Article"}
+              </h2>
+              <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <%= if @item.favicon_url do %>
+                  <img
+                    src={@item.favicon_url}
+                    alt=""
+                    class="w-4 h-4 rounded-sm"
+                    onerror="this.style.display='none'"
+                  />
+                <% end %>
+                <span>
+                  {@item.source_website || @item.article.metadata["domain"] || "unknown"}
+                </span>
+              </div>
+            </div>
+            
+<!-- Author Info -->
+            <%= if @item.article.metadata["author"] do %>
+              <div class="mb-6 pb-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                    <span class="text-sm font-medium text-gray-600">
+                      {String.first(@item.article.metadata["author"])}
+                    </span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">
+                      {@item.article.metadata["author"]}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      @{String.downcase(String.replace(@item.article.metadata["author"], " ", ""))}
+                    </p>
+                  </div>
+                </div>
+                <button class="mt-3 w-full text-center py-2 text-sm text-blue-600 hover:text-blue-800 border border-blue-200 rounded-md hover:bg-blue-50 transition-colors">
+                  Subscribe
+                </button>
+              </div>
+            <% end %>
+            
+<!-- Summary Section -->
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-900 mb-2">SUMMARY</h3>
+              <p class="text-sm text-gray-700 leading-relaxed">
+                <%= if @item.article.metadata["description"] do %>
+                  {@item.article.metadata["description"]}
+                <% else %>
+                  This article discusses important topics related to {@item.article.metadata[
+                    "domain"
+                  ] || "the subject matter"}.
+                <% end %>
+              </p>
+              <p class="text-xs text-gray-500 mt-2">Summarized by Ghostreader</p>
+            </div>
+            
+<!-- Metadata Section -->
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-900 mb-3">METADATA</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Type</span>
+                  <span class="text-gray-900">Article</span>
+                </div>
+
+                <%= if @item.source_website || @item.article.metadata["domain"] do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Source</span>
+                    <div class="flex items-center space-x-2">
+                      <%= if @item.favicon_url do %>
+                        <img
+                          src={@item.favicon_url}
+                          alt=""
+                          class="w-3 h-3 rounded-sm"
+                          onerror="this.style.display='none'"
+                        />
+                      <% end %>
+                      <span class="text-gray-900">
+                        {@item.source_website || @item.article.metadata["domain"]}
+                      </span>
+                    </div>
+                  </div>
+                <% end %>
+
+                <%= if @item.article.metadata["published_date"] do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Published</span>
+                    <span class="text-gray-900">{@item.article.metadata["published_date"]}</span>
+                  </div>
+                <% end %>
+
+                <%= if @item.article.metadata["read_time"] do %>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Length</span>
+                    <span class="text-gray-900">{@item.article.metadata["read_time"]}</span>
+                  </div>
+                <% end %>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Saved</span>
+                  <span class="text-gray-900">
+                    {Calendar.strftime(@item.inserted_at, "%b %d, %Y")}
+                  </span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Status</span>
+                  <span class={if @item.archived, do: "text-gray-500", else: "text-green-600"}>
+                    {if @item.archived, do: "Archived", else: "Active"}
+                  </span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Progress</span>
+                  <span class="text-gray-900">0% (unread)</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Language</span>
+                  <span class="text-gray-900">
+                    {@item.article.metadata["language"] || "English"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+<!-- View Original Link -->
+            <a
+              href={@item.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              View original
+            </a>
+          </div>
+        </div>
+      </div>
+      <% else %>
+        <!-- Non-article and non-video items -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div class="text-center py-12">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">Item Details</h1>
+            <p class="text-gray-600">This item type is not yet supported for detailed viewing.</p>
+            <div class="mt-8">
+              <a
+                href={@item.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 hover:text-blue-800 underline"
+              >
+                View original source
+              </a>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const isHidden = sidebar.classList.contains('translate-x-full');
+    
+    if (isHidden) {
+      sidebar.classList.remove('translate-x-full', 'hidden');
+      sidebar.classList.add('translate-x-0', 'block');
+    } else {
+      sidebar.classList.remove('translate-x-0', 'block');
+      sidebar.classList.add('translate-x-full', 'hidden');
+    }
+  }
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleButton = event.target.closest('button[onclick="toggleSidebar()"]');
+    
+    if (!sidebar || !toggleButton) return;
+    
+    if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+      if (window.innerWidth < 1024) { // lg breakpoint
+        sidebar.classList.remove('translate-x-0', 'block');
+        sidebar.classList.add('translate-x-full', 'hidden');
+      }
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+    
+    if (window.innerWidth >= 1024) { // lg breakpoint
+      sidebar.classList.remove('translate-x-full', 'hidden');
+      sidebar.classList.add('translate-x-0', 'block');
+    } else {
+      sidebar.classList.remove('translate-x-0', 'block');
+      sidebar.classList.add('translate-x-full', 'hidden');
+    }
+  });
+</script>
