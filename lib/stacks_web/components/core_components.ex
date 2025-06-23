@@ -647,6 +647,149 @@ defmodule StacksWeb.CoreComponents do
   end
 
   @doc """
+  Renders a library layout with sidebar navigation and main content area.
+
+  ## Examples
+
+      <.library_layout current_path={@current_path} page_title="Library" item_count={length(@items)}>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <!-- Your content here -->
+        </div>
+      </.library_layout>
+
+  """
+  attr :current_path, :string, required: true
+  attr :page_title, :string, default: "Library"
+  attr :item_count, :integer, default: 0
+  attr :flash, :map, default: %{}
+  slot :inner_block, required: true
+
+  def library_layout(assigns) do
+    ~H"""
+    <.flash_group flash={@flash} />
+    <div class="min-h-screen bg-slate-50 flex">
+      <!-- Collapsible Sidebar -->
+      <div class="sidebar bg-white text-slate-700 transition-all duration-300 ease-in-out flex flex-col border-r border-slate-200" id="sidebar">
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between px-4 py-4 border-b border-slate-200 h-16">
+          <div class="sidebar-brand flex items-center space-x-2">
+            <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-sm">S</span>
+            </div>
+            <span class="sidebar-text font-semibold text-lg text-slate-900">Stacks</span>
+          </div>
+          <button class="sidebar-toggle p-1 hover:bg-slate-100 rounded" id="sidebar-toggle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <nav class="flex-1 px-4 py-6 space-y-1">
+          <div class="sidebar-text text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Library</div>
+          
+          <a href="/" class={if @current_path == "/", do: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-600 font-medium", else: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900"}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <span class="sidebar-text">Inbox</span>
+          </a>
+
+          <a href="/articles" class={if @current_path == "/articles", do: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-600 font-medium", else: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900"}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            <span class="sidebar-text">Articles</span>
+          </a>
+
+          <a href="/videos" class={if @current_path == "/videos", do: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-600 font-medium", else: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900"}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span class="sidebar-text">Videos</span>
+          </a>
+
+          <a href="/archives" class={if @current_path == "/archives", do: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-600 font-medium", else: "sidebar-item flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900"}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6L5 20l-1-1m0 0l1-1m-1 1l6-6L5 8l6 6-6 6z"/>
+            </svg>
+            <span class="sidebar-text">Archives</span>
+          </a>
+
+        </nav>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="flex-1 flex flex-col">
+        <!-- Top Header -->
+        <header class="bg-white border-b border-slate-200 px-6 py-4 h-16">
+          <div class="flex items-center justify-between h-full">
+            <div class="flex items-baseline space-x-4">
+              <h1 class="text-2xl font-bold text-slate-900">{@page_title}</h1>
+              <span class="text-sm text-slate-500">
+                {@item_count} {if @item_count == 1, do: "item", else: "items"}{if @current_path == "/archives", do: " archived", else: ""}
+              </span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <main class="flex-1 overflow-auto p-6">
+          {render_slot(@inner_block)}
+        </main>
+      </div>
+    </div>
+
+    <style>
+      .sidebar {
+        width: 240px;
+      }
+      .sidebar.collapsed {
+        width: 64px;
+      }
+      .sidebar.collapsed .sidebar-text {
+        display: none;
+      }
+      .sidebar.collapsed .sidebar-brand {
+        justify-content: center;
+      }
+      .sidebar.collapsed .sidebar-toggle {
+        transform: rotate(180deg);
+      }
+      
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+
+    <script>
+      // Sidebar toggle functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.getElementById('sidebar-toggle');
+        
+        if (sidebar && toggle) {
+          toggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+          });
+        }
+      });
+    </script>
+    """
+  end
+
+  @doc """
   Translates an error message using gettext.
   """
   def translate_error({msg, opts}) do
