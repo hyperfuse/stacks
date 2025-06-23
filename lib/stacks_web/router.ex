@@ -33,6 +33,7 @@ defmodule StacksWeb.Router do
     pipe_through :api
     resources "/articles", ArticleController, except: [:edit]
     resources "/videos", VideoController, except: [:edit]
+
     resources "/items", ItemController, except: [:edit] do
       post "/archive", ItemController, :archive
       post "/unarchive", ItemController, :unarchive

@@ -320,6 +320,38 @@ defmodule Stacks.Items do
   end
 
   @doc """
+  Archives an item.
+
+  ## Examples
+
+      iex> archive_item(item)
+      {:ok, %Item{archived: true}}
+
+      iex> archive_item(item)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def archive_item(%Item{} = item) do
+    update_item(item, %{archived: true})
+  end
+
+  @doc """
+  Unarchives an item.
+
+  ## Examples
+
+      iex> unarchive_item(item)
+      {:ok, %Item{archived: false}}
+
+      iex> unarchive_item(item)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def unarchive_item(%Item{} = item) do
+    update_item(item, %{archived: false})
+  end
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for tracking item changes.
 
   ## Examples
