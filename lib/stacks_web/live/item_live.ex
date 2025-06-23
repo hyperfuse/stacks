@@ -47,9 +47,12 @@ defmodule StacksWeb.ItemLive do
 
   @impl true
   def handle_event("delete", _params, socket) do
-    case Items.delete_item(socket.assigns.item) do
+    item = socket.assigns.item
+    redirect_path = if item.archived, do: ~p"/archives", else: ~p"/"
+    
+    case Items.delete_item(item) do
       {:ok, _deleted_item} ->
-        {:noreply, redirect(socket, to: ~p"/")}
+        {:noreply, redirect(socket, to: redirect_path)}
       {:error, _changeset} ->
         {:noreply, socket}
     end

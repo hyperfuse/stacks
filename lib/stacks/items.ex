@@ -277,46 +277,20 @@ defmodule Stacks.Items do
   """
   def delete_item(%Item{} = item) do
     Ecto.Multi.new()
-    |> Ecto.Multi.delete_all(:delete_articles, from(a in Stacks.Articles.Article, where: a.item_id == ^item.id))
-    |> Ecto.Multi.delete_all(:delete_videos, from(v in Stacks.Videos.Video, where: v.item_id == ^item.id))
+    |> Ecto.Multi.delete_all(
+      :delete_articles,
+      from(a in Stacks.Articles.Article, where: a.item_id == ^item.id)
+    )
+    |> Ecto.Multi.delete_all(
+      :delete_videos,
+      from(v in Stacks.Videos.Video, where: v.item_id == ^item.id)
+    )
     |> Ecto.Multi.delete(:delete_item, item)
     |> Repo.transaction()
     |> case do
       {:ok, %{delete_item: deleted_item}} -> {:ok, deleted_item}
       {:error, _operation, changeset, _changes} -> {:error, changeset}
     end
-  end
-
-  @doc """
-  Archives an item.
-
-  ## Examples
-
-      iex> archive_item(item)
-      {:ok, %Item{archived: true}}
-
-      iex> archive_item(item)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def archive_item(%Item{} = item) do
-    update_item(item, %{archived: true})
-  end
-
-  @doc """
-  Unarchives an item.
-
-  ## Examples
-
-      iex> unarchive_item(item)
-      {:ok, %Item{archived: false}}
-
-      iex> unarchive_item(item)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def unarchive_item(%Item{} = item) do
-    update_item(item, %{archived: false})
   end
 
   @doc """
