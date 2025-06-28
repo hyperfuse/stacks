@@ -14,6 +14,7 @@ defmodule StacksWeb.ItemLive do
     case Items.archive_item(socket.assigns.item) do
       {:ok, updated_item} ->
         {:noreply, assign(socket, :item, updated_item)}
+
       {:error, _changeset} ->
         {:noreply, socket}
     end
@@ -24,6 +25,7 @@ defmodule StacksWeb.ItemLive do
     case Items.unarchive_item(socket.assigns.item) do
       {:ok, updated_item} ->
         {:noreply, assign(socket, :item, updated_item)}
+
       {:error, _changeset} ->
         {:noreply, socket}
     end
@@ -33,10 +35,11 @@ defmodule StacksWeb.ItemLive do
   def handle_event("delete", _params, socket) do
     item = socket.assigns.item
     redirect_path = if item.archived, do: ~p"/archives", else: ~p"/"
-    
+
     case Items.delete_item(item) do
       {:ok, _deleted_item} ->
         {:noreply, redirect(socket, to: redirect_path)}
+
       {:error, _changeset} ->
         {:noreply, socket}
     end
@@ -48,9 +51,14 @@ defmodule StacksWeb.ItemLive do
     seconds = rem(seconds, 60)
 
     cond do
-      hours > 0 -> "#{hours}:#{String.pad_leading("#{minutes}", 2, "0")}:#{String.pad_leading("#{seconds}", 2, "0")}"
-      minutes > 0 -> "#{minutes}:#{String.pad_leading("#{seconds}", 2, "0")}"
-      true -> "0:#{String.pad_leading("#{seconds}", 2, "0")}"
+      hours > 0 ->
+        "#{hours}:#{String.pad_leading("#{minutes}", 2, "0")}:#{String.pad_leading("#{seconds}", 2, "0")}"
+
+      minutes > 0 ->
+        "#{minutes}:#{String.pad_leading("#{seconds}", 2, "0")}"
+
+      true ->
+        "0:#{String.pad_leading("#{seconds}", 2, "0")}"
     end
   end
 

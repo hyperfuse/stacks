@@ -9,14 +9,18 @@ defmodule StacksWeb.PageController do
   end
 
   def articles(conn, _params) do
-    articles = Items.list_items_with_associations()
-    |> Enum.filter(&(&1.item_type == "article" && &1.article))
+    articles =
+      Items.list_items_with_associations()
+      |> Enum.filter(&(&1.item_type == "article" && &1.article))
+
     render(conn, :articles, items: articles, current_path: conn.request_path)
   end
 
   def videos(conn, _params) do
-    videos = Items.list_items_with_associations()
-    |> Enum.filter(&(&1.item_type == "video" && &1.video))
+    videos =
+      Items.list_items_with_associations()
+      |> Enum.filter(&(&1.item_type == "video" && &1.video))
+
     render(conn, :videos, items: videos, current_path: conn.request_path)
   end
 

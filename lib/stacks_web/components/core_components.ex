@@ -756,6 +756,27 @@ defmodule StacksWeb.CoreComponents do
       }
       .sidebar.collapsed .sidebar-toggle {
         transform: rotate(180deg);
+        background-color: #f1f5f9;
+        margin-top: 0;
+        margin-left: 0.5rem;
+        margin-right: -0.75rem;
+        padding: 0.25rem;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+      .sidebar.collapsed .sidebar-toggle svg {
+        width: 1rem;
+        height: 1rem;
+      }
+      .sidebar.collapsed .sidebar-item {
+        justify-content: center;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      .sidebar.collapsed .sidebar-item svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
       }
       
       .line-clamp-2 {

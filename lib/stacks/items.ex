@@ -277,8 +277,14 @@ defmodule Stacks.Items do
   """
   def delete_item(%Item{} = item) do
     Ecto.Multi.new()
-    |> Ecto.Multi.delete_all(:delete_articles, from(a in Stacks.Articles.Article, where: a.item_id == ^item.id))
-    |> Ecto.Multi.delete_all(:delete_videos, from(v in Stacks.Videos.Video, where: v.item_id == ^item.id))
+    |> Ecto.Multi.delete_all(
+      :delete_articles,
+      from(a in Stacks.Articles.Article, where: a.item_id == ^item.id)
+    )
+    |> Ecto.Multi.delete_all(
+      :delete_videos,
+      from(v in Stacks.Videos.Video, where: v.item_id == ^item.id)
+    )
     |> Ecto.Multi.delete(:delete_item, item)
     |> Repo.transaction()
     |> case do
