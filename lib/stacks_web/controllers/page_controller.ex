@@ -29,11 +29,6 @@ defmodule StacksWeb.PageController do
     render(conn, :archives, items: items, current_path: conn.request_path)
   end
 
-  def archives(conn, _params) do
-    items = Items.list_archived_items_with_associations()
-    render(conn, :archives, items: items, current_path: conn.request_path)
-  end
-
   def item(conn, %{"id" => id}) do
     item = Items.get_item_with_associations!(id)
     render(conn, :item, item: item)

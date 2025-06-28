@@ -45,19 +45,6 @@ defmodule StacksWeb.ItemLive do
     end
   end
 
-  @impl true
-  def handle_event("delete", _params, socket) do
-    item = socket.assigns.item
-    redirect_path = if item.archived, do: ~p"/archives", else: ~p"/"
-    
-    case Items.delete_item(item) do
-      {:ok, _deleted_item} ->
-        {:noreply, redirect(socket, to: redirect_path)}
-      {:error, _changeset} ->
-        {:noreply, socket}
-    end
-  end
-
   defp format_duration(seconds) when is_integer(seconds) do
     hours = div(seconds, 3600)
     minutes = div(rem(seconds, 3600), 60)
