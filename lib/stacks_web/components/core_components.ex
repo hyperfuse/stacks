@@ -757,6 +757,16 @@ defmodule StacksWeb.CoreComponents do
       .sidebar.collapsed .sidebar-toggle {
         transform: rotate(180deg);
       }
+      .sidebar.collapsed .sidebar-item {
+        justify-content: center;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      .sidebar.collapsed .sidebar-item svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+      }
       
       .line-clamp-2 {
         display: -webkit-box;
